@@ -155,34 +155,52 @@ def chan(board, player):
 def move_gen(node, position):
     board = node.board
     x, y = position[0], position[1]
+    player = board[x][y]
+    opponent = -1 * player
     result = []
         
     # UP
     if x > 0 and tmp_board[x - 1][y] == 0:
         tmp_board = copy.deepcopy(board)
-        tmp_board[x - 1][y] = copy.deepcopy(tmp_board[x][y])
+        tmp_board[x - 1][y] = copy.deepcopy(player)
         tmp_board[x][y] = 0
+        
+        ganh(tmp_board, (x - 1, y))
+        chan(tmp_board, opponent)
+        
         tmp = Node(tmp_board, node)
         result.append((tmp, (x - 1, y)))
     # DOWN
     if x < 4 and tmp_board[x + 1][y] == 0:
         tmp_board = copy.deepcopy(board)
-        tmp_board[x + 1][y] = copy.deepcopy(tmp_board[x][y])
+        tmp_board[x + 1][y] = copy.deepcopy(player)
         tmp_board[x][y] = 0
+        
+        ganh(tmp_board, (x + 1, y))
+        chan(tmp_board, opponent)
+        
         tmp = Node(tmp_board, node)
         result.append((tmp, (x + 1, y)))
     # LEFT
     if y > 0 and tmp_board[x][y - 1] == 0:
         tmp_board = copy.deepcopy(board)
-        tmp_board[x][y - 1] = copy.deepcopy(tmp_board[x][y])
+        tmp_board[x][y - 1] = copy.deepcopy(player)
         tmp_board[x][y] = 0
+        
+        ganh(tmp_board, (x, y - 1))
+        chan(tmp_board, opponent)
+        
         tmp = Node(tmp_board, node)
         result.append((tmp, (x, y - 1)))
     # RIGHT
     if y < 4 and tmp_board[x][y + 1] == 0:
         tmp_board = copy.deepcopy(board)
-        tmp_board[x][y + 1] = copy.deepcopy(tmp_board[x][y])
+        tmp_board[x][y + 1] = copy.deepcopy(player)
         tmp_board[x][y] = 0
+        
+        ganh(tmp_board, (x, y + 1))
+        chan(tmp_board, opponent)
+        
         tmp = Node(tmp_board, node)
         result.append((tmp, (x, y + 1)))
             
@@ -191,30 +209,49 @@ def move_gen(node, position):
         # UP LEFT
         if x > 0 and y > 0 and tmp_board[x - 1][y - 1] == 0:
             tmp_board = copy.deepcopy(board)
-            tmp_board[x - 1][y - 1] = copy.deepcopy(tmp_board[x][y])
+            tmp_board[x - 1][y - 1] = copy.deepcopy(player)
             tmp_board[x][y] = 0
+            
+            ganh(tmp_board, (x - 1, y - 1))
+            chan(tmp_board, opponent)
+            
             tmp = Node(tmp_board, node)
             result.append((tmp, (x - 1, y - 1)))
         # UP RIGHT
         if x > 0 and y < 4 and tmp_board[x - 1][y + 1] == 0:
             tmp_board = copy.deepcopy(board)
-            tmp_board[x - 1][y + 1] = copy.deepcopy(tmp_board[x][y])
+            tmp_board[x - 1][y + 1] = copy.deepcopy(player)
             tmp_board[x][y] = 0
+            
+            ganh(tmp_board, (x - 1, y + 1))
+            chan(tmp_board, opponent)
+            
             tmp = Node(tmp_board, node)
             result.append((tmp, (x - 1, y + 1)))
         # DOWN LEFT
         if x < 4 and y > 0 and tmp_board[x + 1][y - 1] == 0:
             tmp_board = copy.deepcopy(board)
-            tmp_board[x + 1][y - 1] = copy.deepcopy(tmp_board[x][y])
+            tmp_board[x + 1][y - 1] = copy.deepcopy(player)
             tmp_board[x][y] = 0
+            
+            ganh(tmp_board, (x + 1, y - 1))
+            chan(tmp_board, opponent)
+            
             tmp = Node(tmp_board, node)
             result.append((tmp, (x + 1, y - 1)))
         # DOWN RIGHT
         if x < 4 and y < 4 and tmp_board[x + 1][y + 1] == 0:
             tmp_board = copy.deepcopy(board)
-            tmp_board[x + 1][y + 1] = copy.deepcopy(tmp_board[x][y])
+            tmp_board[x + 1][y + 1] = copy.deepcopy(player)
             tmp_board[x][y] = 0
+            
+            ganh(tmp_board, (x + 1, y + 1))
+            chan(tmp_board, opponent)
+            
             tmp = Node(tmp_board, node)
             result.append((tmp, (x + 1, y + 1)))
                 
     return result
+
+def move(node, start, end):
+    return 0
