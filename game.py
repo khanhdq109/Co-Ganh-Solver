@@ -133,6 +133,7 @@ def ganh(board, position):
          
 def chan(board, player):
     # Init moveBoard
+    moveBoard = []
     for i in range(5):
         tmp = []
         for j in range(5):
@@ -254,4 +255,32 @@ def move_gen(node, position):
     return result
 
 def move(node, start, end):
-    return 0
+    x0, y0 = start[0], start[1]
+    x1, y1 = end[0], end[1]
+    
+    # Check if it's a valid move
+    valid = False
+    if (
+        x1 >= 0 and x1 < 5 and
+        y1 >= 0 and y1 < 5 and
+        (
+            (x1 == x0 + 1 and y1 == y0) or
+            (x1 == x0 - 1 and y1 == y0) or
+            (x1 == x0 and y1 == y0 + 1) or
+            (x1 == x0 and y1 == y0 -1) or
+            (x0 + y0 % 2 == 0 and
+                (x1 == x0 - 1 and y1 == y0 - 1) or
+                (x1 == x0 + 1 and y1 == y0 - 1) or
+                (x1 == x0 - 1 and y1 == y0 + 1) or
+                (x1 == x0 + 1 and y1 == y0 + 1)
+            )
+        )
+    ):
+        valid = True
+    
+    if not valid:
+        print("Invalid move!!!")
+        return
+    
+    node.board[x1][y1] = node.board[x0][y0]
+    node.board[x0][y0] = 0
