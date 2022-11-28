@@ -3,23 +3,25 @@ import timeit
 
 import game
         
-class solver:
+class Solver:
     def __init__(self,
                  depth: int = 2,
-                 board: list = None):
+                 board: list = None,
+                 player: int = 1):
         self.depth = depth
         self.board = board
+        self.player, self.opponent = player, -1 * player
         self.start = None
         self.end = None
     
     def evaluate(self, board):
         result = 0
-        for i in board:
-            for j in i:
-                result += j
+        for i in range(5):
+            for j in range(5):
+                result += board[i][j]
         return result
     
-    def player(self, node, dp):
+    def play(self, node, dp):
         if dp > self.depth: 
             return
         
@@ -28,14 +30,16 @@ class solver:
             return self.evaluate(node.board)
         
         score = 0
+        cg = game.CoGanh()
         # PLAYER
         if dp % 2 == 0:
             score = -100
-            pos = game.getPosition(node.board, 1)
+            pos = cg.getPosition(node.board, self.player)
             for p in pos:
-                successor = game.move_gen(node, p)
+                successor = cg.move_gen(node, p)
+                if len(successor) == 0: continue
                 for s in successor:
-                    value = self.player(s[0].board, dp + 1)
+                    value = self.play(s[0], dp + 1)
                     if value > score:
                         score = value
                         if dp == 0:
@@ -44,11 +48,12 @@ class solver:
         # OPPONENT
         else:
             score = 100
-            pos = game.getPosition(node.board, -1)
+            pos = cg.getPosition(node.board, self.opponent)
             for p in pos:
-                successor = game.move_gen(node, p)
+                successor = cg.move_gen(node, p)
+                if len(successor) == 0: continue
                 for s in successor:
-                    value = self.player(s[0].board, dp + 1)
+                    value = self.play(s[0], dp + 1)
                     if value < score:
                         score = value
                         
@@ -56,5 +61,9 @@ class solver:
     
     def minimax(self):
         node = game.Node(self.board)
-        score = self.player(self.board, self.depth)
+        score = self.play(node, 0)
+        
+        self.board[self.end[0]][self.end[1]] = self.board[self.start[0]][self.end[0]]
+        self.board[self.start[0]][self.end[0]] = 0
+        
         return (self.start, self.end)

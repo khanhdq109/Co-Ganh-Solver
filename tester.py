@@ -17,7 +17,7 @@ def printBoard(board):
 
 def test_chan(board):
     Game = game.CoGanh()
-    Game.chan(board, 1)
+    Game.chan(board, -1)
     print("\nSECOND BOARD\n")
     printBoard(board)
     
