@@ -16,27 +16,29 @@ def printBoard(board):
         print(str(i) + '\n')
 
 def test_chan(board):
-    Game = game.CoGanh()
-    Game.chan(board, -1)
+    cg = game.CoGanh()
+    cg.chan(board, -1)
     print("\nSECOND BOARD\n")
     printBoard(board)
     
 def test_ganh(board):
-    game.ganh(board, (2, 2))
+    cg = game.CoGanh()
+    cg.ganh(board, (2, 2))
     print("\nSECOND BOARD\n")
     printBoard(board)
     
 def test_moveGen(board):
     node = game.Node(board)
-    result = game.move_gen(node, (4, 3))
+    cg = game.CoGanh()
+    result = cg.move_gen(node, (1, 1))
     print("\nGENERATED:\n")
     for gen in result:
-        print(gen)
+        print(gen[1], ", score: ", str(sum(map(sum, gen[0].board))))
         print('\n')
     
 board = readBoard('input.txt')
+
 print("FIRST BOARD\n")
 printBoard(board)
 
-#test_moveGen(board)
-test_chan(board)
+test_moveGen(board)

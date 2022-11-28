@@ -15,11 +15,7 @@ class Solver:
         self.end = None
     
     def evaluate(self, board):
-        result = 0
-        for i in range(5):
-            for j in range(5):
-                result += board[i][j]
-        return result
+        return sum(map(sum, board))
     
     def play(self, node, dp):
         if dp > self.depth: 
@@ -62,8 +58,4 @@ class Solver:
     def minimax(self):
         node = game.Node(self.board)
         score = self.play(node, 0)
-        
-        self.board[self.end[0]][self.end[1]] = self.board[self.start[0]][self.end[0]]
-        self.board[self.start[0]][self.end[0]] = 0
-        
         return (self.start, self.end)

@@ -28,7 +28,7 @@ def saveBoard(board, file):
 def move(board, player, remain_time_x, remain_time_y):
     start = timeit.default_timer()
     
-    solver = Minimax.Solver(4, board, player)
+    solver = Minimax.Solver(2, board, player)
     result = solver.minimax()
     
     stop = timeit.default_timer()
@@ -46,10 +46,11 @@ def move(board, player, remain_time_x, remain_time_y):
 cg = game.CoGanh()
 
 while True:
-    inp = input('TURN: ')
+    inp = input('\nTURN: ')
     
     if inp == 'x' or inp == 'X':
         board = readBoard('input.txt')
+        printBoard(board)
         
         step = move(board, 1, 100, 100)
         print(step)
@@ -63,6 +64,7 @@ while True:
             break
     elif inp == 'o' or inp == 'O':
         board = readBoard('output.txt')
+        printBoard(board)
         
         pos = input('POSITION: ')
         tmp = [int(x) for x in pos]

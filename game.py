@@ -49,7 +49,7 @@ class CoGanh:
                 self.moveBoard[x][y] = 1
                 return False
         
-        if x + y % 2 == 0:
+        if (x + y) % 2 == 0:
             if x > 0 and y > 0:
                 if board[x - 1][y - 1] == 0:
                     self.moveBoard[x][y] = 1
@@ -85,7 +85,7 @@ class CoGanh:
             if board[x][y + 1] == player:
                 check.append(self.cantMove(board, (x, y + 1)))
                 
-        if x + y % 2 == 0:
+        if (x + y) % 2 == 0:
             if x > 0 and y > 0:
                 if board[x - 1][y - 1] == player:
                     check.append(self.cantMove(board, (x - 1, y - 1)))
@@ -153,16 +153,15 @@ class CoGanh:
 
     # Return Node and a position
     def move_gen(self, node, position):
-        board = node.board
         x, y = position[0], position[1]
-        player = board[x][y]
+        player = node.board[x][y]
         opponent = -1 * player
         result = []
             
         # UP
         if x > 0:
-            if board[x - 1][y] == 0:
-                tmp_board = copy.deepcopy(board)
+            if node.board[x - 1][y] == 0:
+                tmp_board = copy.deepcopy(node.board)
                 tmp_board[x - 1][y] = copy.deepcopy(player)
                 tmp_board[x][y] = 0
                 
@@ -173,8 +172,8 @@ class CoGanh:
                 result.append((tmp, (x - 1, y)))
         # DOWN
         if x < 4:
-            if board[x + 1][y] == 0:
-                tmp_board = copy.deepcopy(board)
+            if node.board[x + 1][y] == 0:
+                tmp_board = copy.deepcopy(node.board)
                 tmp_board[x + 1][y] = copy.deepcopy(player)
                 tmp_board[x][y] = 0
                 
@@ -185,8 +184,8 @@ class CoGanh:
                 result.append((tmp, (x + 1, y)))
         # LEFT
         if y > 0:
-            if board[x][y - 1] == 0:
-                tmp_board = copy.deepcopy(board)
+            if node.board[x][y - 1] == 0:
+                tmp_board = copy.deepcopy(node.board)
                 tmp_board[x][y - 1] = copy.deepcopy(player)
                 tmp_board[x][y] = 0
                 
@@ -197,8 +196,8 @@ class CoGanh:
                 result.append((tmp, (x, y - 1)))
         # RIGHT
         if y < 4:
-            if board[x][y + 1] == 0:
-                tmp_board = copy.deepcopy(board)
+            if node.board[x][y + 1] == 0:
+                tmp_board = copy.deepcopy(node.board)
                 tmp_board[x][y + 1] = copy.deepcopy(player)
                 tmp_board[x][y] = 0
                 
@@ -209,11 +208,11 @@ class CoGanh:
                 result.append((tmp, (x, y + 1)))
                 
         # DIAGONAL
-        if x + y % 2 == 0:
+        if (x + y) % 2 == 0:
             # UP LEFT
             if x > 0 and y > 0:
-                if board[x - 1][y - 1] == 0:
-                    tmp_board = copy.deepcopy(board)
+                if node.board[x - 1][y - 1] == 0:
+                    tmp_board = copy.deepcopy(node.board)
                     tmp_board[x - 1][y - 1] = copy.deepcopy(player)
                     tmp_board[x][y] = 0
                     
@@ -224,8 +223,8 @@ class CoGanh:
                     result.append((tmp, (x - 1, y - 1)))
             # UP RIGHT
             if x > 0 and y < 4:
-                if board[x - 1][y + 1] == 0:
-                    tmp_board = copy.deepcopy(board)
+                if node.board[x - 1][y + 1] == 0:
+                    tmp_board = copy.deepcopy(node.board)
                     tmp_board[x - 1][y + 1] = copy.deepcopy(player)
                     tmp_board[x][y] = 0
                     
@@ -236,8 +235,8 @@ class CoGanh:
                     result.append((tmp, (x - 1, y + 1)))
             # DOWN LEFT
             if x < 4 and y > 0:
-                if board[x + 1][y - 1] == 0:
-                    tmp_board = copy.deepcopy(board)
+                if node.board[x + 1][y - 1] == 0:
+                    tmp_board = copy.deepcopy(node.board)
                     tmp_board[x + 1][y - 1] = copy.deepcopy(player)
                     tmp_board[x][y] = 0
                     
@@ -248,8 +247,8 @@ class CoGanh:
                     result.append((tmp, (x + 1, y - 1)))
             # DOWN RIGHT
             if x < 4 and y < 4:
-                if board[x + 1][y + 1] == 0:
-                    tmp_board = copy.deepcopy(board)
+                if node.board[x + 1][y + 1] == 0:
+                    tmp_board = copy.deepcopy(node.board)
                     tmp_board[x + 1][y + 1] = copy.deepcopy(player)
                     tmp_board[x][y] = 0
                     
