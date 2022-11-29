@@ -15,14 +15,22 @@ def readBoard(file):
     return board
 
 def printBoard(board):
-    for i in board:
-        print(str(i) + '\n')
+    for i in range(5):
+        for j in range(5):
+            if board[i][j] != -1:
+                print(' ' + str(board[i][j]) + ' ', end = '')
+            else:
+                print(str(board[i][j]) + ' ', end = '')
+        print('\n')
     
 def saveBoard(board, file):
     with open(file, 'w') as f:
         for i in range(5):
             for j in range(5):
-                f.write(str(board[i][j]) + ' ')
+                if board[i][j] != -1:
+                    f.write(' ' + str(board[i][j]) + ' ')
+                else:
+                    f.write(str(board[i][j]) + ' ')
             f.write('\n')
             
 def move(board, player, remain_time_x, remain_time_y):
