@@ -36,31 +36,43 @@ def saveBoard(board, file):
 def move(board, player, remain_time_x, remain_time_y):
     start = timeit.default_timer()
     
-    solver = Minimax.Solver(2, board, player)
+    solver = Minimax.Solver(4, board, player)
     result = solver.minimax()
     
     stop = timeit.default_timer()
     
     time_step = stop - start
+    print('--> Total time: ' + str(time_step) + '\n')
     if player == 1:
         remain_time_x -= time_step
+        # print('--> Time remain: ' + str(remain_time_x) + '\n')
     else:
         remain_time_y -= time_step
-        
-    print('Total time: ' + str(time_step) + '\n')
+        # print('--> Time remain: ' + str(remain_time_y) + '\n')
         
     return result
 
+def restart():
+    with open('input.txt', 'w') as f:
+        f.write(' 1  1  1  1  1\n')
+        f.write(' 1  0  0  0  1\n')
+        f.write('-1  0  0  0  1\n')
+        f.write('-1  0  0  0 -1\n')
+        f.write('-1 -1 -1 -1 -1')
+
+restart()
 cg = game.CoGanh()
+inp = 'X'
+remain_time = 100
 
 while True:
-    inp = input('\nTURN: ')
+    print('================================================\n- TURN: ' + inp)
     
     if inp == 'x' or inp == 'X':
         board = readBoard('input.txt')
         printBoard(board)
         
-        step = move(board, 1, 100, 100)
+        step = move(board, 1, remain_time, 100)
         print(step)
         
         start, end = step[0], step[1]
@@ -70,6 +82,8 @@ while True:
         
         if cg.end_game(board):
             break
+        
+        inp = 'O'
     elif inp == 'o' or inp == 'O':
         board = readBoard('output.txt')
         printBoard(board)
@@ -84,6 +98,8 @@ while True:
         
         if cg.end_game(board):
             break
+        
+        inp = 'X'
     else:
         print("\nEND PROGRAM")
         break

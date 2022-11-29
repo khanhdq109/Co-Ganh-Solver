@@ -30,13 +30,13 @@ def test_ganh(board):
 def test_moveGen(board):
     node = game.Node(board)
     cg = game.CoGanh()
-    result = cg.move_gen(node, (1, 1))
+    result = cg.move_gen(node, (3, 0))
     print("\nGENERATED:\n")
     for gen in result:
         print(gen[1], ", score: ", str(sum(map(sum, gen[0].board))))
         print('\n')
     
-board = readBoard('input.txt')
+board = readBoard('output.txt')
 
 print("FIRST BOARD\n")
 printBoard(board)

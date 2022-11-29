@@ -274,7 +274,7 @@ class CoGanh:
                 (x1 == x0 - 1 and y1 == y0) or
                 (x1 == x0 and y1 == y0 + 1) or
                 (x1 == x0 and y1 == y0 -1) or
-                (x0 + y0 % 2 == 0 and
+                ((x0 + y0) % 2 == 0 and
                     (x1 == x0 - 1 and y1 == y0 - 1) or
                     (x1 == x0 + 1 and y1 == y0 - 1) or
                     (x1 == x0 - 1 and y1 == y0 + 1) or
