@@ -110,7 +110,7 @@ class CoGanh:
         
         return result
             
-    def ganh(self, board, position):
+    def ganh(self, board, position, check = []):
         x, y = position[0], position[1]
         player = board[x][y]
         opponent = -1 * board[x][y]
@@ -119,16 +119,20 @@ class CoGanh:
         if x > 0 and x < 4:
             if board[x - 1][y] == opponent and board[x + 1][y] == opponent:
                 board[x - 1][y], board[x + 1][y] = player, player
+                check.append(True)
         # VERTICAL
         if y > 0 and y < 4:
             if board[x][y - 1] == opponent and board[x][y + 1] == opponent:
                 board[x][y - 1], board[x][y + 1] = player, player
+                check.append(True)
         # DIAGONAL
         if ((x + y) % 2 == 0 and (x > 0 and x < 4) and (y > 0 and y < 4)):
             if board[x - 1][y - 1] == opponent and board[x + 1][y + 1] == opponent:
                 board[x - 1][y - 1], board[x + 1][y + 1] = player, player
+                check.append(True)
             if board[x - 1][y + 1] == opponent and board[x + 1][y - 1] == opponent:
                 board[x - 1][y + 1], board[x + 1][y - 1] = player, player
+                check.append(True)
 
     def chan(self, board, player):
         # Init moveBoard
@@ -164,12 +168,18 @@ class CoGanh:
                 tmp_board = copy.deepcopy(node.board)
                 tmp_board[x - 1][y] = copy.deepcopy(player)
                 tmp_board[x][y] = 0
+                
+                # If len(check) > 0, then this move can "ganh"
+                check = []
             
-                self.ganh(tmp_board, (x - 1, y))
+                self.ganh(tmp_board, (x - 1, y), check)
                 self.chan(tmp_board, opponent)
                     
                 tmp = Node(tmp_board, node)
-                result.append((tmp, (x - 1, y)))
+                if len(check) > 0:
+                    result.append((tmp, (x - 1, y), True, position))
+                else:
+                    result.append((tmp, (x - 1, y), False, position))
         # DOWN
         if x < 4:
             if node.board[x + 1][y] == 0:
@@ -177,11 +187,17 @@ class CoGanh:
                 tmp_board[x + 1][y] = copy.deepcopy(player)
                 tmp_board[x][y] = 0
                 
-                self.ganh(tmp_board, (x + 1, y))
+                # If len(check) > 0, then this move can "ganh"
+                check = []
+                
+                self.ganh(tmp_board, (x + 1, y), check)
                 self.chan(tmp_board, opponent)
                     
                 tmp = Node(tmp_board, node)
-                result.append((tmp, (x + 1, y)))
+                if len(check) > 0:
+                    result.append((tmp, (x + 1, y), True, position))
+                else:
+                    result.append((tmp, (x + 1, y), False, position))
         # LEFT
         if y > 0:
             if node.board[x][y - 1] == 0:
@@ -189,11 +205,17 @@ class CoGanh:
                 tmp_board[x][y - 1] = copy.deepcopy(player)
                 tmp_board[x][y] = 0
                 
-                self.ganh(tmp_board, (x, y - 1))
+                # If len(check) > 0, then this move can "ganh"
+                check = []
+                
+                self.ganh(tmp_board, (x, y - 1), check)
                 self.chan(tmp_board, opponent)
                     
                 tmp = Node(tmp_board, node)
-                result.append((tmp, (x, y - 1)))
+                if len(check) > 0:
+                    result.append((tmp, (x, y - 1), True, position))
+                else:
+                    result.append((tmp, (x, y - 1), False, position))
         # RIGHT
         if y < 4:
             if node.board[x][y + 1] == 0:
@@ -201,11 +223,17 @@ class CoGanh:
                 tmp_board[x][y + 1] = copy.deepcopy(player)
                 tmp_board[x][y] = 0
                 
-                self.ganh(tmp_board, (x, y + 1))
+                # If len(check) > 0, then this move can "ganh"
+                check = []
+                
+                self.ganh(tmp_board, (x, y + 1), check)
                 self.chan(tmp_board, opponent)
                     
                 tmp = Node(tmp_board, node)
-                result.append((tmp, (x, y + 1)))
+                if len(check) > 0:
+                    result.append((tmp, (x, y + 1), True, position))
+                else:
+                    result.append((tmp, (x, y + 1), False, position))
                 
         # DIAGONAL
         if (x + y) % 2 == 0:
@@ -216,11 +244,17 @@ class CoGanh:
                     tmp_board[x - 1][y - 1] = copy.deepcopy(player)
                     tmp_board[x][y] = 0
                     
-                    self.ganh(tmp_board, (x - 1, y - 1))
+                    # If len(check) > 0, then this move can "ganh"
+                    check = []
+                    
+                    self.ganh(tmp_board, (x - 1, y - 1), check)
                     self.chan(tmp_board, opponent)
                         
                     tmp = Node(tmp_board, node)
-                    result.append((tmp, (x - 1, y - 1)))
+                    if len(check) > 0:
+                        result.append((tmp, (x - 1, y - 1), True, position))
+                    else:
+                        result.append((tmp, (x - 1, y - 1), False, position))
             # UP RIGHT
             if x > 0 and y < 4:
                 if node.board[x - 1][y + 1] == 0:
@@ -228,11 +262,17 @@ class CoGanh:
                     tmp_board[x - 1][y + 1] = copy.deepcopy(player)
                     tmp_board[x][y] = 0
                     
-                    self.ganh(tmp_board, (x - 1, y + 1))
+                    # If len(check) > 0, then this move can "ganh"
+                    check = []
+                    
+                    self.ganh(tmp_board, (x - 1, y + 1), check)
                     self.chan(tmp_board, opponent)
                         
                     tmp = Node(tmp_board, node)
-                    result.append((tmp, (x - 1, y + 1)))
+                    if len(check) > 0:
+                        result.append((tmp, (x - 1, y + 1), True, position))
+                    else:
+                        result.append((tmp, (x - 1, y + 1), False, position))
             # DOWN LEFT
             if x < 4 and y > 0:
                 if node.board[x + 1][y - 1] == 0:
@@ -240,11 +280,17 @@ class CoGanh:
                     tmp_board[x + 1][y - 1] = copy.deepcopy(player)
                     tmp_board[x][y] = 0
                     
-                    self.ganh(tmp_board, (x + 1, y - 1))
+                    # If len(check) > 0, then this move can "ganh"
+                    check = []
+                    
+                    self.ganh(tmp_board, (x + 1, y - 1), check)
                     self.chan(tmp_board, opponent)
                         
                     tmp = Node(tmp_board, node)
-                    result.append((tmp, (x + 1, y - 1)))
+                    if len(check) > 0:
+                        result.append((tmp, (x + 1, y - 1), True, position))
+                    else:
+                        result.append((tmp, (x + 1, y - 1), False, position))
             # DOWN RIGHT
             if x < 4 and y < 4:
                 if node.board[x + 1][y + 1] == 0:
@@ -252,11 +298,17 @@ class CoGanh:
                     tmp_board[x + 1][y + 1] = copy.deepcopy(player)
                     tmp_board[x][y] = 0
                     
-                    self.ganh(tmp_board, (x + 1, y + 1))
+                    # If len(check) > 0, then this move can "ganh"
+                    check = []
+                    
+                    self.ganh(tmp_board, (x + 1, y + 1), check)
                     self.chan(tmp_board, opponent)
                         
                     tmp = Node(tmp_board, node)
-                    result.append((tmp, (x + 1, y + 1)))
+                    if len(check) > 0:
+                        result.append((tmp, (x + 1, y + 1), True, position))
+                    else:
+                        result.append((tmp, (x + 1, y + 1), False, position))
                     
         return result
 

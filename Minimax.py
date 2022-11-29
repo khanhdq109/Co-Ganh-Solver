@@ -28,17 +28,28 @@ class Solver:
             return self.evaluate(node.board)
         
         score = 0
+        g = False
         cg = game.CoGanh()
         # PLAYER
         if dp % 2 == 0:
             score = -100
-            
+            successor = []
             pos = cg.getPosition(node.board, self.player)
                 
             for p in pos:
                 successor = cg.move_gen(node, p)
-                if len(successor) == 0: continue
+                
+            if len(successor) > 0:
                 for s in successor:
+                    if s[2]:
+                        g = True
+                        break
+                    
+                for s in successor:
+                    if g:
+                        if not s[2]:
+                            continue
+                        
                     if cg.X_win(s[0].board):
                         if dp == 0:
                             self.start = p
@@ -54,13 +65,23 @@ class Solver:
         # OPPONENT
         else:
             score = 100
-            
+            successor = []
             pos = cg.getPosition(node.board, self.opponent)
                 
             for p in pos:
                 successor = cg.move_gen(node, p)
-                if len(successor) == 0: continue
+                
+            if len(successor) > 0:
                 for s in successor:
+                    if s[2]:
+                        g = True
+                        break
+                    
+                for s in successor:
+                    if g:
+                        if not s[2]:
+                            continue
+                        
                     if cg.O_win(s[0].board): 
                         return -100
                     
