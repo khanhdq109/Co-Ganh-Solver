@@ -109,7 +109,7 @@ class CoGanh:
             self.moveBoard[x][y] = 1
         
         return result
-
+            
     def ganh(self, board, position):
         x, y = position[0], position[1]
         player = board[x][y]
@@ -150,7 +150,7 @@ class CoGanh:
             for j in range(5):
                 if board[i][j] == 2:
                     board[i][j] = player
-
+    
     # Return Node and a position
     def move_gen(self, node, position):
         x, y = position[0], position[1]
@@ -164,10 +164,10 @@ class CoGanh:
                 tmp_board = copy.deepcopy(node.board)
                 tmp_board[x - 1][y] = copy.deepcopy(player)
                 tmp_board[x][y] = 0
-                
+            
                 self.ganh(tmp_board, (x - 1, y))
                 self.chan(tmp_board, opponent)
-                
+                    
                 tmp = Node(tmp_board, node)
                 result.append((tmp, (x - 1, y)))
         # DOWN
@@ -179,7 +179,7 @@ class CoGanh:
                 
                 self.ganh(tmp_board, (x + 1, y))
                 self.chan(tmp_board, opponent)
-                
+                    
                 tmp = Node(tmp_board, node)
                 result.append((tmp, (x + 1, y)))
         # LEFT
@@ -191,7 +191,7 @@ class CoGanh:
                 
                 self.ganh(tmp_board, (x, y - 1))
                 self.chan(tmp_board, opponent)
-                
+                    
                 tmp = Node(tmp_board, node)
                 result.append((tmp, (x, y - 1)))
         # RIGHT
@@ -203,7 +203,7 @@ class CoGanh:
                 
                 self.ganh(tmp_board, (x, y + 1))
                 self.chan(tmp_board, opponent)
-                
+                    
                 tmp = Node(tmp_board, node)
                 result.append((tmp, (x, y + 1)))
                 
@@ -218,7 +218,7 @@ class CoGanh:
                     
                     self.ganh(tmp_board, (x - 1, y - 1))
                     self.chan(tmp_board, opponent)
-                    
+                        
                     tmp = Node(tmp_board, node)
                     result.append((tmp, (x - 1, y - 1)))
             # UP RIGHT
@@ -230,7 +230,7 @@ class CoGanh:
                     
                     self.ganh(tmp_board, (x - 1, y + 1))
                     self.chan(tmp_board, opponent)
-                    
+                        
                     tmp = Node(tmp_board, node)
                     result.append((tmp, (x - 1, y + 1)))
             # DOWN LEFT
@@ -242,7 +242,7 @@ class CoGanh:
                     
                     self.ganh(tmp_board, (x + 1, y - 1))
                     self.chan(tmp_board, opponent)
-                    
+                        
                     tmp = Node(tmp_board, node)
                     result.append((tmp, (x + 1, y - 1)))
             # DOWN RIGHT
@@ -254,7 +254,7 @@ class CoGanh:
                     
                     self.ganh(tmp_board, (x + 1, y + 1))
                     self.chan(tmp_board, opponent)
-                    
+                        
                     tmp = Node(tmp_board, node)
                     result.append((tmp, (x + 1, y + 1)))
                     

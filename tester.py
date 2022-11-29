@@ -16,7 +16,7 @@ def printBoard(board):
         print(str(i) + '\n')
         
 def move(board, player, remain_time_x = 100, remain_time_y = 100):
-    solver = Minimax.Solver(1, board, player)
+    solver = Minimax.Solver(4, board, player)
     result = solver.minimax()       
     return result
 
@@ -38,7 +38,7 @@ def test_ganh(board):
 def test_moveGen(board):
     node = game.Node(board)
     cg = game.CoGanh()
-    result = cg.move_gen(node, (3, 0))
+    result = cg.move_gen(node, (2, 0))
     print("\nGENERATED:\n")
     for gen in result:
         print(gen[1], ", score: ", str(sum(map(sum, gen[0].board))))
