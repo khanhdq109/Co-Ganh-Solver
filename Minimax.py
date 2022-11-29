@@ -35,6 +35,9 @@ class Solver:
                 successor = cg.move_gen(node, p)
                 if len(successor) == 0: continue
                 for s in successor:
+                    if cg.X_win(s[0].board): 
+                        return 16
+                    
                     value = self.play(s[0], dp + 1)
                     if value > score:
                         score = value
@@ -49,6 +52,9 @@ class Solver:
                 successor = cg.move_gen(node, p)
                 if len(successor) == 0: continue
                 for s in successor:
+                    if cg.O_win(s[0].board): 
+                        return -16
+                    
                     value = self.play(s[0], dp + 1)
                     if value < score:
                         score = value

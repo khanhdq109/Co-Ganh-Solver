@@ -303,3 +303,15 @@ class CoGanh:
             print("\nO WIN!!!")
             return True
         return False
+    
+    def X_win(self, board):
+        score = sum(map(sum, board))
+        if score == 16:
+            return True
+        return False
+    
+    def O_win(self, board):
+        score = sum(map(sum, board))
+        if score == -16:
+            return True
+        return False
