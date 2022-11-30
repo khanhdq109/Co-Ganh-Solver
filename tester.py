@@ -1,5 +1,6 @@
 import game
 import Minimax
+import MCTS
 
 def readBoard(file):
     count = 0

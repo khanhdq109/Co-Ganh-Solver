@@ -4,14 +4,12 @@ class Solver:
     def __init__(self,
                  depth: int = 2,
                  board: list = None,
-                 player: int = 1,
-                 F: bool = False,):
+                 player: int = 1,):
         self.depth = depth
         self.board = board
         self.player, self.opponent = player, -1 * player
         self.start = None
         self.end = None
-        self.win = False
     
     def evaluate(self, board):
         return sum(map(sum, board))

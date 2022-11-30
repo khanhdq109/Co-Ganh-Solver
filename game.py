@@ -2,10 +2,8 @@ import copy
 
 class Node:
     def __init__(self,
-                 board: list,
-                 parents: 'Node' = None,):
+                 board: list,):
         self.board = copy.deepcopy(board)
-        self.parents = parents
         
 class CoGanh:
     def __init__(self):
@@ -191,7 +189,7 @@ class CoGanh:
                 self.ganh(tmp_board, (x - 1, y), check)
                 self.chan(tmp_board, opponent)
                     
-                tmp = Node(tmp_board, node)
+                tmp = Node(tmp_board)
                 if len(check) > 0:
                     result.append((tmp, (x - 1, y), True, position))
                 else:
@@ -209,7 +207,7 @@ class CoGanh:
                 self.ganh(tmp_board, (x + 1, y), check)
                 self.chan(tmp_board, opponent)
                     
-                tmp = Node(tmp_board, node)
+                tmp = Node(tmp_board)
                 if len(check) > 0:
                     result.append((tmp, (x + 1, y), True, position))
                 else:
@@ -227,7 +225,7 @@ class CoGanh:
                 self.ganh(tmp_board, (x, y - 1), check)
                 self.chan(tmp_board, opponent)
                     
-                tmp = Node(tmp_board, node)
+                tmp = Node(tmp_board)
                 if len(check) > 0:
                     result.append((tmp, (x, y - 1), True, position))
                 else:
@@ -245,7 +243,7 @@ class CoGanh:
                 self.ganh(tmp_board, (x, y + 1), check)
                 self.chan(tmp_board, opponent)
                     
-                tmp = Node(tmp_board, node)
+                tmp = Node(tmp_board)
                 if len(check) > 0:
                     result.append((tmp, (x, y + 1), True, position))
                 else:
@@ -266,7 +264,7 @@ class CoGanh:
                     self.ganh(tmp_board, (x - 1, y - 1), check)
                     self.chan(tmp_board, opponent)
                         
-                    tmp = Node(tmp_board, node)
+                    tmp = Node(tmp_board)
                     if len(check) > 0:
                         result.append((tmp, (x - 1, y - 1), True, position))
                     else:
@@ -284,7 +282,7 @@ class CoGanh:
                     self.ganh(tmp_board, (x - 1, y + 1), check)
                     self.chan(tmp_board, opponent)
                         
-                    tmp = Node(tmp_board, node)
+                    tmp = Node(tmp_board)
                     if len(check) > 0:
                         result.append((tmp, (x - 1, y + 1), True, position))
                     else:
@@ -302,7 +300,7 @@ class CoGanh:
                     self.ganh(tmp_board, (x + 1, y - 1), check)
                     self.chan(tmp_board, opponent)
                         
-                    tmp = Node(tmp_board, node)
+                    tmp = Node(tmp_board)
                     if len(check) > 0:
                         result.append((tmp, (x + 1, y - 1), True, position))
                     else:
@@ -320,7 +318,7 @@ class CoGanh:
                     self.ganh(tmp_board, (x + 1, y + 1), check)
                     self.chan(tmp_board, opponent)
                         
-                    tmp = Node(tmp_board, node)
+                    tmp = Node(tmp_board)
                     if len(check) > 0:
                         result.append((tmp, (x + 1, y + 1), True, position))
                     else:
@@ -383,11 +381,3 @@ class CoGanh:
         if score == -16:
             return True
         return False
-    
-    def nums(self, board, player):
-        ans = 0
-        for i in range(5):
-            for i in range(5):
-                if board[i][j] == player:
-                    ans += 1
-        return ans

@@ -41,10 +41,14 @@ def nums(board, player):
                 ans += 1
     return ans
             
-def move(board, player, remain_time_x, remain_time_y):
+def move(prev_board, board, player, remain_time_x, remain_time_y):
     start = timeit.default_timer()
     
-    depth = 6
+    # Using prev_board for nothing
+    
+    # Use depth = 2 when fighting online with 'random move' bot
+    # Use depth >= 4 when fighting offline with another teams's bot
+    depth = 4
     
     solver = Minimax.Solver(depth, board, player)
     result = solver.minimax()
@@ -79,9 +83,10 @@ while True:
     
     if inp == 'x' or inp == 'X':
         board = readBoard('input.txt')
+        prev_board = []
         printBoard(board)
         
-        step = move(board, 1, remain_time_x, remain_time_y)
+        step = move(prev_board, board, 1, remain_time_x, remain_time_y)
         print(step)
         
         start, end = step[0], step[1]
