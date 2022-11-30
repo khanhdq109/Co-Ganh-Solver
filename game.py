@@ -22,7 +22,7 @@ class CoGanh:
                     result.append((i, j))
         return result
 
-    # If False, the chessman at this position can move. Otherwise, it can't
+    # If 0, the chessman at this position can move. Otherwise, it can't
     def cantMove(self, board, position):
         x, y = position[0], position[1]
         
@@ -65,46 +65,62 @@ class CoGanh:
             if x < 4 and y < 4:
                 if board[x + 1][y + 1] == 0:
                     self.moveBoard[x][y] = 1
-                    return False
+                    return 0
         
         # PART II
         player = board[x][y]
         board[x][y] = 2
-        check = []
+        result = True
         
         if x > 0:
             if board[x - 1][y] == player:
-                check.append(self.cantMove(board, (x - 1, y)))
+                result = result and self.cantMove(board, (x - 1, y))
         if x < 4:
             if board[x + 1][y] == player:
-                check.append(self.cantMove(board, (x + 1, y)))
+                result = result and self.cantMove(board, (x + 1, y))
         if y > 0:
             if board[x][y - 1] == player:
-                check.append(self.cantMove(board, (x, y - 1)))
+                result = result and self.cantMove(board, (x, y - 1))
         if y < 4:
             if board[x][y + 1] == player:
-                check.append(self.cantMove(board, (x, y + 1)))
+                result = result and self.cantMove(board, (x, y + 1))
                 
         if (x + y) % 2 == 0:
             if x > 0 and y > 0:
                 if board[x - 1][y - 1] == player:
-                    check.append(self.cantMove(board, (x - 1, y - 1)))
+                    result = result and self.cantMove(board, (x - 1, y - 1))
             if x < 4 and y > 0:
                 if board[x + 1][y - 1] == player:
-                    check.append(self.cantMove(board, (x + 1, y - 1)))
+                    result = result and self.cantMove(board, (x + 1, y - 1))
             if x > 0 and y < 4:
                 if board[x - 1][y + 1] == player:
-                    check.append(self.cantMove(board, (x - 1, y + 1)))
+                    result = result and self.cantMove(board, (x - 1, y + 1))
             if x < 4 and y < 4:
                 if board[x + 1][y + 1] == player:
-                    check.append(self.cantMove(board, (x + 1, y + 1)))
-                    
-        result = True
-        for i in check:
-            result = result and i
+                    result = result and self.cantMove(board, (x + 1, y + 1))
             
         if result:
-            self.moveBoard[x][y] = 0
+            later = False
+            if x > 0 and not later:
+                if board[x - 1][y] == 2: later = True
+            if x < 4 and not later:
+                if board[x + 1][y] == 2: later = True
+            if y > 0 and not later:
+                if board[x][y - 1] == 2: later = True
+            if y < 4 and not later:
+                if board[x][y + 1] == 2: later = True
+            if (x + y) % 2 == 0:
+                if x > 0 and y > 0 and not later:
+                    if board[x - 1][y - 1] == 2: later = True
+                if x < 4 and y > 0 and not later:
+                    if board[x + 1][y - 1] == 2: later = True
+                if x > 0 and y < 4 and not later:
+                    if board[x - 1][y + 1] == 2: later = True
+                if x < 4 and y < 4 and not later:
+                    if board[x + 1][y + 1] == 2: later = True
+            
+            if not later:
+                self.moveBoard[x][y] = 0
         else:
             self.moveBoard[x][y] = 1
         
@@ -150,10 +166,10 @@ class CoGanh:
             if self.cantMove(board, p):
                 board[p[0]][p[1]] = -1 * player
                 
-        for i in range(5):
-            for j in range(5):
-                if board[i][j] == 2:
-                    board[i][j] = player
+            for i in range(5):
+                for j in range(5):
+                    if board[i][j] == 2:
+                        board[i][j] = player
     
     # Return Node and a position
     def move_gen(self, node, position):

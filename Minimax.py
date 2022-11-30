@@ -37,7 +37,7 @@ class Solver:
             pos = cg.getPosition(node.board, self.player)
                 
             for p in pos:
-                successor = cg.move_gen(node, p)
+                successor += cg.move_gen(node, p)
                 
             if len(successor) > 0:
                 for s in successor:
@@ -52,7 +52,7 @@ class Solver:
                         
                     if cg.X_win(s[0].board):
                         if dp == 0:
-                            self.start = p
+                            self.start = s[3]
                             self.end = s[1]
                         return 100
                     
@@ -60,7 +60,7 @@ class Solver:
                     if value > score:
                         score = value
                         if dp == 0:
-                            self.start = p
+                            self.start = s[3]
                             self.end = s[1]
         # OPPONENT
         else:
@@ -69,7 +69,7 @@ class Solver:
             pos = cg.getPosition(node.board, self.opponent)
                 
             for p in pos:
-                successor = cg.move_gen(node, p)
+                successor += cg.move_gen(node, p)
                 
             if len(successor) > 0:
                 for s in successor:

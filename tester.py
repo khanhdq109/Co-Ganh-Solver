@@ -12,8 +12,13 @@ def readBoard(file):
     return board
 
 def printBoard(board):
-    for i in board:
-        print(str(i) + '\n')
+    for i in range(5):
+        for j in range(5):
+            if board[i][j] != -1:
+                print(' ' + str(board[i][j]) + ' ', end = '')
+            else:
+                print(str(board[i][j]) + ' ', end = '')
+        print('\n')
         
 def move(board, player, remain_time_x = 100, remain_time_y = 100):
     solver = Minimax.Solver(4, board, player)
@@ -22,6 +27,12 @@ def move(board, player, remain_time_x = 100, remain_time_y = 100):
 
 def test_move(board):
     print(move(board, 1))
+    
+def test_simple(board):
+    cg = game.CoGanh()
+    cg.simple_move(board, (3, 1), (2, 2))
+    print("\nSECOND BOARD\n")
+    printBoard(board)
 
 def test_chan(board):
     cg = game.CoGanh()
@@ -44,10 +55,9 @@ def test_moveGen(board):
         print(gen[1], ", score: ", str(sum(map(sum, gen[0].board))))
         print('\n')
     
-board = readBoard('output.txt')
+board = readBoard('input.txt')
 
 print("FIRST BOARD\n")
 printBoard(board)
 
-# test_moveGen(board)
-test_move(board)
+test_simple(board)
