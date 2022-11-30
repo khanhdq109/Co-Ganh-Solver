@@ -383,3 +383,11 @@ class CoGanh:
         if score == -16:
             return True
         return False
+    
+    def nums(self, board, player):
+        ans = 0
+        for i in range(5):
+            for i in range(5):
+                if board[i][j] == player:
+                    ans += 1
+        return ans

@@ -1,6 +1,3 @@
-import copy
-import timeit
-
 import game
         
 class Solver:

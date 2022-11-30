@@ -33,10 +33,20 @@ def saveBoard(board, file):
                     f.write(str(board[i][j]) + ' ')
             f.write('\n')
             
+def nums(board, player):
+    ans = 0
+    for i in range(5):
+        for j in range(5):
+            if board[i][j] == player:
+                ans += 1
+    return ans
+            
 def move(board, player, remain_time_x, remain_time_y):
     start = timeit.default_timer()
     
-    solver = Minimax.Solver(4, board, player)
+    depth = 6
+    
+    solver = Minimax.Solver(depth, board, player)
     result = solver.minimax()
     
     stop = timeit.default_timer()
@@ -45,10 +55,8 @@ def move(board, player, remain_time_x, remain_time_y):
     print('--> Total time: ' + str(time_step) + '\n')
     if player == 1:
         remain_time_x -= time_step
-        # print('--> Time remain: ' + str(remain_time_x) + '\n')
     else:
         remain_time_y -= time_step
-        # print('--> Time remain: ' + str(remain_time_y) + '\n')
         
     return result
 
@@ -63,7 +71,8 @@ def restart():
 restart()
 cg = game.CoGanh()
 inp = 'X'
-remain_time = 100
+remain_time_x = 100
+remain_time_y = 100
 
 while True:
     print('================================================\n- TURN: ' + inp)
@@ -72,7 +81,7 @@ while True:
         board = readBoard('input.txt')
         printBoard(board)
         
-        step = move(board, 1, remain_time, 100)
+        step = move(board, 1, remain_time_x, remain_time_y)
         print(step)
         
         start, end = step[0], step[1]
