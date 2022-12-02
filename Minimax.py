@@ -87,6 +87,6 @@ class Solver:
         return score
     
     def minimax(self):
-        node = game.Node(self.board)
+        node = game.Node_1(self.board)
         score = self.play(node, 0)
         return (self.start, self.end)

@@ -48,7 +48,7 @@ def test_ganh(board):
     printBoard(board)
     
 def test_moveGen(board):
-    node = game.Node(board)
+    node = game.Node_1(board)
     cg = game.CoGanh()
     result = cg.move_gen(node, (2, 0))
     print("\nGENERATED:\n")
