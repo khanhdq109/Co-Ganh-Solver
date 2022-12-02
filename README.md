@@ -17,5 +17,5 @@ Example:
 ```
 python bloxorz.py mcts
 ```
-When it's your turn, the program will ask you to enter the coordinates. 
+When it's your turn, the program will ask you to enter the coordinates.<br /> 
 For example, if you want to move from (4, 4) to (3, 3), type: 4433.
