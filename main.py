@@ -1,3 +1,8 @@
+# move_1() and move_2() function is just two version of move() function
+# using Minimax and Monte Carlo Tree Search
+
+# prev_board parameter in both two above function is used for nothing
+
 import timeit
 
 import game
@@ -41,17 +46,34 @@ def nums(board, player):
                 ans += 1
     return ans
             
-def move(prev_board, board, player, remain_time_x, remain_time_y):
+# Using Minimax
+def move_1(prev_board, board, player, remain_time_x, remain_time_y):
     start = timeit.default_timer()
-    
-    # Using prev_board for nothing
     
     # Use depth = 2 when fighting online with 'random move' bot
     # Use depth >= 4 when fighting offline with another teams's bot
     depth = 4
     
     solver = Minimax.Solver(depth, board, player)
-    result = solver.minimax()
+    result = solver.solv()
+    
+    stop = timeit.default_timer()
+    
+    time_step = stop - start
+    print('--> Total time: ' + str(time_step) + '\n')
+    if player == 1:
+        remain_time_x -= time_step
+    else:
+        remain_time_y -= time_step
+        
+    return result
+
+# Using Monte Carlo Tree Search
+def move_2(prev_board, board, player, remain_time_x, remain_time_y):
+    start = timeit.default_timer()
+    
+    solver = MCTS.Solver(board, player)
+    result = solver.solv()
     
     stop = timeit.default_timer()
     
@@ -86,7 +108,7 @@ while True:
         prev_board = []
         printBoard(board)
         
-        step = move(prev_board, board, 1, remain_time_x, remain_time_y)
+        step = move_1(prev_board, board, 1, remain_time_x, remain_time_y)
         print(step)
         
         start, end = step[0], step[1]

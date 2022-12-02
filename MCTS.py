@@ -10,33 +10,37 @@ class Solver:
         self.board = board
         self.player, self.opponent = player, -1 * player
         self.total_simu = 0
-        self.sime_threshold = 1000
+        self.simu_threshold = 1000
         
         self.cg = game.CoGanh()
 
     # depend on the ratio win_simu / nums_sime of each node
-    def choose_1(self, list):
+    def choose_1(self, chessmans):
         best_move = None
         max_ratio = 0
         
-        for node in list:
-            ratio = node.ratio
-            if ratio > max_ratio:
-                max_ratio = ratio
-                best_move = node
+        for c in chessmans:
+            list = c.child
+            for node in list:
+                ratio = node.ratio()
+                if ratio > max_ratio:
+                    max_ratio = ratio
+                    best_move = node
                 
         return best_move
     
-    # depend on the total number of simulation of each node
-    def choose_2(self, list):
+    # depend on the total numbers of simulation of each node
+    def choose_2(self, chessmans):
         best_move = None
         max_simu = 0
         
-        for node in list:
-            simu = node.nums_simu
-            if simu > max_simu:
-                max_simu = simu
-                best_move = node
+        for c in chessmans:
+            list = c.child
+            for node in list:
+                simu = node.nums_simu
+                if simu > max_simu:
+                    max_simu = simu
+                    best_move = node
                 
         return best_move
 
@@ -108,10 +112,17 @@ class Solver:
                 prev = prev.parent
         return
     
-    def mcts(self, node):
-        selected_node = node
+    def solv(self):
+        pos = self.cg.getPosition(self.board, self.player)
         
-        while self.total_simu < self.sime_threshold:
+        chessmans = []
+        for p in pos:
+            chessmans.append(self.cg.Node_2(p, self.board))
+        
+        while self.total_simu < self.simu_threshold:
+            # First, select chessman
+            selected_node = self.Selection(chessmans)
+            
             # Selection
             while len(selected_node.child) > 0:
                 list = selected_node.child
@@ -127,7 +138,7 @@ class Solver:
             # Update
             self.Update(selected_node, res)
             
-        best_move = self.choose_1(node.child)
+        best_move = self.choose_1(chessmans)
         start, end = best_move.parent.position, best_move.position
         
         return (start, end)

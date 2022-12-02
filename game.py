@@ -21,8 +21,10 @@ class Node_2:
         self.win_simu = 0
         self.nums_simu = 0
         
-    # functions used for mcts
+    # functions used for MCTS
     def ratio(self):
+        if self.nums_simu == 0:
+            return -1
         return self.win_simu / self.nums_simu
           
 class CoGanh:

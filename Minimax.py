@@ -8,6 +8,7 @@ class Solver:
         self.depth = depth
         self.board = board
         self.player, self.opponent = player, -1 * player
+        
         self.start = None
         self.end = None
     
@@ -86,7 +87,7 @@ class Solver:
                         
         return score
     
-    def minimax(self):
+    def solv(self):
         node = game.Node_1(self.board)
         score = self.play(node, 0)
         return (self.start, self.end)
