@@ -1,5 +1,5 @@
 # Co Ganh
-A computer program that play Vietnam's traditional board game "CO GANH" using Minimax and Monte Carlo Tree Search algorithm.
+A computer program that play Vietnam's traditional board game "CO GANH" using *Minimax* and *Monte Carlo Tree Search* algorithm.
 
 ## Project structure
 * [main.py](./main.py) 		                              : the main code file to execute the program
