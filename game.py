@@ -11,10 +11,8 @@ class Node_1:
 
 class Node_2:
     def __init__(self,
-                 position: tuple,
                  board: list,
                  parent: 'Node_2' = None,):
-        self.position = position
         self.board = copy.deepcopy(board)
         self.parent = parent
         self.child = []
@@ -24,7 +22,7 @@ class Node_2:
     # functions used for MCTS
     def ratio(self):
         if self.nums_simu == 0:
-            return -1
+            return 0
         return self.win_simu / self.nums_simu
           
 class CoGanh:
@@ -350,8 +348,7 @@ class CoGanh:
     
     # Using for MCTS
     # Return Node_2 and a position
-    def move_gen_2(self, node: Node_2):
-        position = node.position
+    def move_gen_2(self, node: Node_2, position):
         x, y = position[0], position[1]
         player = node.board[x][y]
         opponent = -1 * player
@@ -370,7 +367,7 @@ class CoGanh:
                 self.ganh(tmp_board, (x - 1, y), check)
                 self.chan(tmp_board, opponent)
                     
-                tmp = Node_2((x - 1, y), tmp_board, node)
+                tmp = Node_2(tmp_board, node)
                 if len(check) > 0:
                     result.append((tmp, True))
                 else:
@@ -388,7 +385,7 @@ class CoGanh:
                 self.ganh(tmp_board, (x + 1, y), check)
                 self.chan(tmp_board, opponent)
                     
-                tmp = Node_2((x + 1, y), tmp_board, node)
+                tmp = Node_2(tmp_board, node)
                 if len(check) > 0:
                     result.append((tmp, True))
                 else:
@@ -406,7 +403,7 @@ class CoGanh:
                 self.ganh(tmp_board, (x, y - 1), check)
                 self.chan(tmp_board, opponent)
                     
-                tmp = Node_2((x, y - 1), tmp_board, node)
+                tmp = Node_2(tmp_board, node)
                 if len(check) > 0:
                     result.append((tmp, True))
                 else:
@@ -424,7 +421,7 @@ class CoGanh:
                 self.ganh(tmp_board, (x, y + 1), check)
                 self.chan(tmp_board, opponent)
                     
-                tmp = Node_2((x, y + 1), tmp_board, node)
+                tmp = Node_2(tmp_board, node)
                 if len(check) > 0:
                     result.append((tmp, True))
                 else:
@@ -445,7 +442,7 @@ class CoGanh:
                     self.ganh(tmp_board, (x - 1, y - 1), check)
                     self.chan(tmp_board, opponent)
                         
-                    tmp = Node_2((x - 1, y - 1), tmp_board, node)
+                    tmp = Node_2(tmp_board, node)
                     if len(check) > 0:
                         result.append((tmp, True))
                     else:
@@ -463,7 +460,7 @@ class CoGanh:
                     self.ganh(tmp_board, (x - 1, y + 1), check)
                     self.chan(tmp_board, opponent)
                         
-                    tmp = Node_2((x - 1, y + 1), tmp_board, node)
+                    tmp = Node_2(tmp_board, node)
                     if len(check) > 0:
                         result.append((tmp, True))
                     else:
@@ -481,7 +478,7 @@ class CoGanh:
                     self.ganh(tmp_board, (x + 1, y - 1), check)
                     self.chan(tmp_board, opponent)
                         
-                    tmp = Node_2((x + 1, y - 1), tmp_board, node)
+                    tmp = Node_2(tmp_board, node)
                     if len(check) > 0:
                         result.append((tmp, True))
                     else:
@@ -499,7 +496,7 @@ class CoGanh:
                     self.ganh(tmp_board, (x + 1, y + 1), check)
                     self.chan(tmp_board, opponent)
                         
-                    tmp = Node_2((x + 1, y + 1), tmp_board, node)
+                    tmp = Node_2(tmp_board, node)
                     if len(check) > 0:
                         result.append((tmp, True))
                     else:
@@ -541,24 +538,35 @@ class CoGanh:
         self.ganh(board, end)
         self.chan(board, -1 * board[x1][y1])
         
-    def random_move(self, node):
-        x, y = node.position[0], node.position[1]
+    def random_move(self, node, player):
+        pos = self.getPosition(node.board, player)
+        possible_moves = []
         
-        possible_moves = self.move_gen_2(node)
-        lower, upper = 0, len(possible_moves) - 1
+        for p in pos:
+            possible_moves += self.move_gen_2(node, p)
         
         g = False
         for move in possible_moves:
             if move[1]:
                 g = True
                 break
+        if g:
+            possible_moves = [move for move in possible_moves if move[1]]
             
-        while True:
-            rand = random.randint(lower, upper)
-            if g:
-                if not possible_moves[rand][1]:
-                    continue
-            return possible_moves[rand][0]
+        rand = random.randint(0, len(possible_moves) - 1)
+        return possible_moves[rand][0]
+        
+    def back_prop(self, board1, board2, player):
+        start, end = None, None
+        
+        for i in range(5):
+            for j in range(5):
+                if board1[i][j] == 0 and board2[i][j] == player:
+                    end = (i, j)
+                elif board1[i][j] == player and board2[i][j] == 0:
+                    start = (i, j)
+        
+        return start, end
                     
     def end_game(self, board):
         score = sum(map(sum, board))

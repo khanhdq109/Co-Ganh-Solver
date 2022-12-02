@@ -55,10 +55,17 @@ def test_moveGen(board):
     for gen in result:
         print(gen[1], ", score: ", str(sum(map(sum, gen[0].board))))
         print('\n')
-    
+
+"""
 board = readBoard('input.txt')
 
 print("FIRST BOARD\n")
 printBoard(board)
 
 test_simple(board)
+"""
+
+list = [5, 7, 3, 1, 15, 26, 9, 2.5, 3.2, 5.1, 4.9, 11]
+list = [item for item in list if item >= 5]
+
+print(list)
