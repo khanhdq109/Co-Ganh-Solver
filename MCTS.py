@@ -7,7 +7,7 @@ class Solver:
     def __init__(self,
                  board: list = None,
                  player: int = 1,
-                 simu_threshold: int = 15):
+                 simu_threshold: int = 10):
         self.board = board
         self.player, self.opponent = player, -1 * player
         self.simu_threshold = simu_threshold
@@ -158,7 +158,7 @@ class Solver:
             # Update
             self.Update(selected_node, res)
             
-        best_move = self.choose_2(node.child)
+        best_move = self.choose_1(node.child)
         start, end = self.cg.back_prop(self.board, best_move.board, self.player)
         
         return (start, end)
