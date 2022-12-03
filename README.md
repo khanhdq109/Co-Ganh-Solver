@@ -13,6 +13,10 @@ Running the program with command line syntax for playing with the bot:
 ```
 python main.py <algorithm>
 ```
+There are three algorithms you can choose:
+* *minimax* (Minimax algorithm)
+* *mcts* (Monte Carlo Tree Search algorithm)
+* *hybrid* (combine version of two algorithms above)
 Example: 
 ```
 python bloxorz.py mcts
