@@ -538,6 +538,18 @@ class CoGanh:
         self.ganh(board, end)
         self.chan(board, -1 * board[x1][y1])
         
+    def back_prop(self, board1, board2, player):
+        start, end = None, None
+        
+        for i in range(5):
+            for j in range(5):
+                if board1[i][j] == 0 and board2[i][j] == player:
+                    end = (i, j)
+                elif board1[i][j] == player and board2[i][j] == 0:
+                    start = (i, j)
+        
+        return start, end
+        
     def random_move(self, node, player):
         pos = self.getPosition(node.board, player)
         possible_moves = []
@@ -555,18 +567,28 @@ class CoGanh:
             
         rand = random.randint(0, len(possible_moves) - 1)
         return possible_moves[rand][0]
+    
+    def random_move_2(self, board, player):
+        pos = self.getPosition(board, player)
+        node = Node_1(board)
+        successor = []
+        for p in pos:
+            successor += self.move_gen(node, p)
         
-    def back_prop(self, board1, board2, player):
-        start, end = None, None
+        g = False
+        for s in successor:
+            if s[2] == True:
+                g = True
+                break
+            
+        if g:
+            successor = [move for move in successor if move[2]]
         
-        for i in range(5):
-            for j in range(5):
-                if board1[i][j] == 0 and board2[i][j] == player:
-                    end = (i, j)
-                elif board1[i][j] == player and board2[i][j] == 0:
-                    start = (i, j)
+        rand = random.randint(0, len(successor) - 1)
+        step = successor[rand][0]
+        start, end = self.back_prop(board, step.board, player)
         
-        return start, end
+        return (start, end)
                     
     def end_game(self, board, notice = True):
         score = sum(map(sum, board))

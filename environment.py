@@ -42,10 +42,15 @@ def saveBoard(board, file):
 def move_1(prev_board, board, player, remain_time_x, remain_time_y):
     start = timeit.default_timer()
     
+    # Random element
+    rand_step = random.randint(0, 10)
+    if rand_step == 3 or rand_step == 7:
+        cg = game.CoGanh()
+        return cg.random_move_2(board, player)
+    
     # Use depth = 2 when fighting online with 'random move' bot
     # Use depth >= 4 when fighting offline with another teams's bot
     depth = 4
-    
     solver = Minimax.Solver(depth, board, player)
     result = solver.solv()
     
@@ -85,7 +90,6 @@ def move(prev_board, board, player, remain_time_x, remain_time_y):
     solver = None
     s = sum(map(sum, board))
     rand = random.randint(0, 10)
-    
     if s <= 10 and rand % 5 == 0:
         print("Using MCTS!\n")
         solver = MCTS.Solver(board, player)
@@ -93,7 +97,6 @@ def move(prev_board, board, player, remain_time_x, remain_time_y):
         print("Using Minimax!\n")
         depth = 4
         solver = Minimax.Solver(depth, board, player)
-    
     result = solver.solv()
     
     stop = timeit.default_timer()
@@ -185,7 +188,7 @@ while True:
         prev_board = []
         board = readBoard('output.txt')
         
-        step = algorithm_2(prev_board, board, 1, remain_time_x, remain_time_y)
+        step = algorithm_2(prev_board, board, -1, remain_time_x, remain_time_y)
         print(step)
         
         start, end = step[0], step[1]
