@@ -16,7 +16,8 @@ python main.py <algorithm>
 There are three algorithms you can choose:
 * *minimax* (Minimax algorithm)
 * *mcts* (Monte Carlo Tree Search algorithm)
-* *hybrid* (combine version of two algorithms above)<br /> 
+* *hybrid* (combine version of two algorithms above)<br />
+
 Example: 
 ```
 python main.py minimax
