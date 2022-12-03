@@ -7,7 +7,7 @@ class Solver:
     def __init__(self,
                  board: list = None,
                  player: int = 1,
-                 simu_threshold: int = 1000):
+                 simu_threshold: int = 15):
         self.board = board
         self.player, self.opponent = player, -1 * player
         self.simu_threshold = simu_threshold
@@ -68,11 +68,20 @@ class Solver:
         return best_node
     
     def Expansion(self, node):
-        possible_moves = []
+        ply = 0
+        if node.parent == None:
+            ply = self.player
+        else:
+            board1, board2 = node.parent.board, node.board
+            for i in range(5):
+                for j in range(5):
+                    if board1[i][j] == 0 and board2[i][j] != 0:
+                        ply = -1 * board2[i][j]
         
-        pos = self.cg.getPosition(node.board)
+        possible_moves = []
+        pos = self.cg.getPosition(node.board, ply)
         for p in pos:
-            possible_moves += self.cg.move_gen_2(node, p)
+            possible_moves += self.cg.move_gen_2(node, p) 
 
         g = False
         for move in possible_moves:
@@ -87,10 +96,21 @@ class Solver:
             node.child.append(move[0])
     
     def Simulation(self, node):
-        final_step = copy.deepcopy(node)
-        ply = self.player
+        # print("Simulation: " + str(self.total_simu + 1))
         
-        while not self.cg.end_game(final_step.board):
+        ply = 0
+        if node.parent == None:
+            ply = self.player
+        else:
+            board1, board2 = node.parent.board, node.board
+            for i in range(5):
+                for j in range(5):
+                    if board1[i][j] == 0 and board2[i][j] != 0:
+                        ply = -1 * board2[i][j]
+                        
+        final_step = copy.deepcopy(node)
+        
+        while not self.cg.end_game(final_step.board, False):
             final_step = self.cg.random_move(final_step, ply)
             ply *= -1
             
@@ -120,12 +140,11 @@ class Solver:
         return
     
     def solv(self):
-        node = self.cg.Node_2(self.board)
+        node = game.Node_2(self.board)
         
         while self.total_simu < self.simu_threshold:
-            selected_node = node
-        
             # Selection
+            selected_node = node
             while len(selected_node.child) > 0:
                 list = selected_node.child
                 selected_node = self.Selection(list)
@@ -139,7 +158,7 @@ class Solver:
             # Update
             self.Update(selected_node, res)
             
-        best_move = self.choose_1(node.child)
+        best_move = self.choose_2(node.child)
         start, end = self.cg.back_prop(self.board, best_move.board, self.player)
         
         return (start, end)

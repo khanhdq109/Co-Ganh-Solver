@@ -3,6 +3,7 @@
 
 # prev_board parameter in both two above function is used for nothing
 
+import sys
 import timeit
 
 import game
@@ -22,11 +23,13 @@ def readBoard(file):
 def printBoard(board):
     for i in range(5):
         for j in range(5):
+            e = ''
+            if j == 4: e = '\n'
             if board[i][j] != -1:
-                print(' ' + str(board[i][j]) + ' ', end = '')
+                print(' ' + str(board[i][j]) + ' ', end = e)
             else:
-                print(str(board[i][j]) + ' ', end = '')
-        print('\n')
+                print(str(board[i][j]) + ' ', end = e)
+    print('')
     
 def saveBoard(board, file):
     with open(file, 'w') as f:
@@ -86,6 +89,17 @@ def move_2(prev_board, board, player, remain_time_x, remain_time_y):
         
     return result
 
+def choose_algorithm(alg):
+    alg = alg.lower()
+    
+    if alg == 'minimax':
+        return move_1
+    elif alg == 'mcts':
+        return move_2
+    else:
+        print('INVALID! ALGORITHM IS NOT AVAILABLE')
+        return
+
 def restart():
     with open('input.txt', 'w') as f:
         f.write(' 1  1  1  1  1\n')
@@ -100,15 +114,17 @@ inp = 'X'
 remain_time_x = 100
 remain_time_y = 100
 
+algorithm = choose_algorithm(str(sys.argv[1:][0]))
+
 while True:
     print('================================================\n- TURN: ' + inp)
     
     if inp == 'x' or inp == 'X':
-        board = readBoard('input.txt')
         prev_board = []
+        board = readBoard('input.txt')
         printBoard(board)
         
-        step = move_1(prev_board, board, 1, remain_time_x, remain_time_y)
+        step = algorithm(prev_board, board, 1, remain_time_x, remain_time_y)
         print(step)
         
         start, end = step[0], step[1]

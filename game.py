@@ -568,13 +568,15 @@ class CoGanh:
         
         return start, end
                     
-    def end_game(self, board):
+    def end_game(self, board, notice = True):
         score = sum(map(sum, board))
         if score == 16:
-            print("\nX WIN!!!")
+            if notice:
+                print("\nX WIN!!!")
             return True
         elif score == -16:
-            print("\nO WIN!!!")
+            if notice:
+                print("\nO WIN!!!")
             return True
         return False
     
