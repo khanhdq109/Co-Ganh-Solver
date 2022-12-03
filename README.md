@@ -3,6 +3,7 @@ A computer program that play Vietnam's traditional board game "CO GANH" using *M
 
 ## Project structure
 * [main.py](./main.py) 		                              : the main code file to execute the program
+* [environment.py](./environment.py) 		              : environment for bots to play with each other
 * [game.py](./game.py) 		                              : source code for game "Co Ganh"
 * [Minimax.py](./Mimimax.py) 		                        : source code for Minimax algorithm
 * [MCTS.py](./MCTS.py) 		                              : source code for Monte Carlo Tree Search algorithm

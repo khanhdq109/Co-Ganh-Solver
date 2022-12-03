@@ -132,7 +132,7 @@ def choose_algorithm(alg):
         print('INVALID! ALGORITHM IS NOT AVAILABLE')
         return
 
-def restart():
+def restart(file):
     with open('input.txt', 'w') as f:
         f.write(' 1  1  1  1  1\n')
         f.write(' 1  0  0  0  1\n')

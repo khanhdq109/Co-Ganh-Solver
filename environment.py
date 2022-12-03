@@ -7,6 +7,14 @@ import game
 import Minimax
 import MCTS
 
+def contain(num, list):
+    if list == []:
+        return False
+    for i in list:
+        if i == num:
+            return True
+    return False
+
 def readBoard(file):
     count = 0
     board = []
@@ -43,13 +51,27 @@ def move_1(prev_board, board, player, remain_time_x, remain_time_y):
     start = timeit.default_timer()
     
     # Random element
-    rand_step = random.randint(0, 10)
-    if rand_step == 3 or rand_step == 7:
+    rand_step = random.randint(0, 20)
+    s = sum(map(sum, board))
+    list = []
+    # 9 - 7
+    if s >= 0 and s <= 2:
+        list = [0, 4, 8, 12, 16, 20]
+    # 12 - 4
+    elif s >= 0 and s <= 8:
+        list = [5, 15]
+    # 14 - 2 or 2 - 14
+    elif s >= 12 or s <= -12:
+        list = []
+    # Remain
+    else:
+        list = [7]
+    if contain(rand_step, list):
         cg = game.CoGanh()
         return cg.random_move_2(board, player)
     
     # Use depth = 2 when fighting online with 'random move' bot
-    # Use depth >= 4 when fighting offline with another teams's bot
+    # Use depth >= 4 when fighting offline with another team's bot
     depth = 4
     solver = Minimax.Solver(depth, board, player)
     result = solver.solv()
@@ -69,6 +91,26 @@ def move_1(prev_board, board, player, remain_time_x, remain_time_y):
 def move_2(prev_board, board, player, remain_time_x, remain_time_y):
     start = timeit.default_timer()
     
+    # Random element
+    rand_step = random.randint(0, 20)
+    s = sum(map(sum, board))
+    list = []
+    # 9 - 7
+    if s >= 0 and s <= 2:
+        list = [0, 4, 8, 12, 16, 20]
+    # 12 - 4
+    elif s >= 0 and s <= 8:
+        list = [5, 15]
+    # 14 - 2 or 2 - 14
+    elif s >= 12 or s <= -12:
+        list = []
+    # Remain
+    else:
+        list = [7]
+    if contain(rand_step, list):
+        cg = game.CoGanh()
+        return cg.random_move_2(board, player)
+    
     solver = MCTS.Solver(board, player)
     result = solver.solv()
     
@@ -87,8 +129,27 @@ def move_2(prev_board, board, player, remain_time_x, remain_time_y):
 def move(prev_board, board, player, remain_time_x, remain_time_y):
     start = timeit.default_timer()
     
-    solver = None
+    # Random element
+    rand_step = random.randint(0, 20)
     s = sum(map(sum, board))
+    list = []
+    # 9 - 7
+    if s >= 0 and s <= 2:
+        list = [0, 4, 8, 12, 16, 20]
+    # 12 -4
+    elif s >= 0 and s <= 8:
+        list = [5, 15]
+    # 14 - 2 or 2 - 14
+    elif s >= 12 or s <= -12:
+        list = []
+    # Remain
+    else:
+        list = [7]
+    if contain(rand_step, list):
+        cg = game.CoGanh()
+        return cg.random_move_2(board, player)
+    
+    solver = None
     rand = random.randint(0, 10)
     if s <= 10 and rand % 5 == 0:
         print("Using MCTS!\n")
@@ -123,8 +184,8 @@ def choose_algorithm(alg):
         print('INVALID! ALGORITHM IS NOT AVAILABLE')
         return
 
-def restart():
-    with open('input.txt', 'w') as f:
+def restart(file):
+    with open(file, 'w') as f:
         f.write(' 1  1  1  1  1\n')
         f.write(' 1  0  0  0  1\n')
         f.write('-1  0  0  0  1\n')
@@ -139,25 +200,28 @@ def nums(board, player):
                 ans += 1
     return ans
 
-restart()
 cg = game.CoGanh()
 inp = input("Play first? (X/O): ")
-remain_time_x = 100
-remain_time_y = 100
+
+if inp == 'X' or inp == 'x':
+    restart('input.txt')
+else:
+    restart('output.txt')
 
 algo1 = input("Choose algorithm for X: ")
 algo2 = input("Choose algorithm for O: ")
 algorithm_1 = choose_algorithm(algo1)
 algorithm_2 = choose_algorithm(algo2)
 
+remain_time_x = 100
+remain_time_y = 100
+
 count = 0
 while True:
-    print('================================================\n- TURN: ' + inp)
+    count += 1
+    print('================================================\n- TURN ' + str(count) + ': ' + inp)
     
     if inp == 'x' or inp == 'X':
-        count += 1
-        print('Step ' + str(count) + ' X\n')
-        
         prev_board = []
         board = readBoard('input.txt')
         
@@ -182,9 +246,6 @@ while True:
             break
             
     elif inp == 'o' or inp == 'O':
-        count += 1
-        print('Step ' + str(count) + ' O\n')
-        
         prev_board = []
         board = readBoard('output.txt')
         

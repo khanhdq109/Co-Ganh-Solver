@@ -348,7 +348,7 @@ class CoGanh:
     
     # Using for MCTS
     # Return Node_2 and a position
-    def move_gen_2(self, node: Node_2, position):
+    def move_gen_2(self, node: Node_2, position: tuple):
         x, y = position[0], position[1]
         player = node.board[x][y]
         opponent = -1 * player
@@ -585,8 +585,8 @@ class CoGanh:
             successor = [move for move in successor if move[2]]
         
         rand = random.randint(0, len(successor) - 1)
-        step = successor[rand][0]
-        start, end = self.back_prop(board, step.board, player)
+        step = successor[rand]
+        start, end = step[3], step[1]
         
         return (start, end)
                     

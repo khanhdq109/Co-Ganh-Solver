@@ -1,3 +1,5 @@
+import copy
+
 import game
         
 class Solver:
@@ -6,7 +8,7 @@ class Solver:
                  board: list = None,
                  player: int = 1,):
         self.depth = depth
-        self.board = board
+        self.board = copy.deepcopy(board)
         self.player, self.opponent = player, -1 * player
         
         self.start = None
