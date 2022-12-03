@@ -7,7 +7,7 @@ class Solver:
     def __init__(self,
                  board: list = None,
                  player: int = 1,
-                 simu_threshold: int = 10):
+                 simu_threshold: int = 15):
         self.board = board
         self.player, self.opponent = player, -1 * player
         self.simu_threshold = simu_threshold

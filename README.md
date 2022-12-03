@@ -9,7 +9,8 @@ A computer program that play Vietnam's traditional board game "CO GANH" using *M
 * [input.txt](./input.txt), [output.txt](./output.txt)  : temporary file to read input and save output in each turn of players
 
 ## Execute
-Running the program with command line syntax for playing with the bot:
+### Human with Bot
+Running the program with command line syntax to play with the bot:
 ```
 python main.py <algorithm>
 ```
@@ -24,3 +25,9 @@ python main.py minimax
 ```
 When it's your turn, the program will ask you to enter the coordinates.<br /> 
 For example, if you want to move from *(4, 4)* to *(3, 3)*, type: *4433*.
+
+### Bot with Bot
+Running the program with command line syntax and follow the instructions for bots to play with each other:
+```
+python environment.py
+```

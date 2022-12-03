@@ -1,9 +1,5 @@
-# move_1() and move_2() function is just two version of move() function
-# using Minimax and Monte Carlo Tree Search
+# Environment for bots to interact with each other
 
-# prev_board parameter in both two above function is used for nothing
-
-import sys
 import random
 import timeit
 
@@ -41,14 +37,6 @@ def saveBoard(board, file):
                 else:
                     f.write(str(board[i][j]) + ' ')
             f.write('\n')
-            
-def nums(board, player):
-    ans = 0
-    for i in range(5):
-        for j in range(5):
-            if board[i][j] == player:
-                ans += 1
-    return ans
             
 # Using Minimax
 def move_1(prev_board, board, player, remain_time_x, remain_time_y):
@@ -139,24 +127,38 @@ def restart():
         f.write('-1  0  0  0  1\n')
         f.write('-1  0  0  0 -1\n')
         f.write('-1 -1 -1 -1 -1')
+        
+def nums(board, player):
+    ans = 0
+    for i in range(5):
+        for j in range(5):
+            if board[i][j] == player:
+                ans += 1
+    return ans
 
 restart()
 cg = game.CoGanh()
-inp = 'X'
+inp = input("Play first? (X/O): ")
 remain_time_x = 100
 remain_time_y = 100
 
-algorithm = choose_algorithm(str(sys.argv[1:][0]))
+algo1 = input("Choose algorithm for X: ")
+algo2 = input("Choose algorithm for O: ")
+algorithm_1 = choose_algorithm(algo1)
+algorithm_2 = choose_algorithm(algo2)
 
+count = 0
 while True:
     print('================================================\n- TURN: ' + inp)
     
     if inp == 'x' or inp == 'X':
+        count += 1
+        print('Step ' + str(count) + ' X\n')
+        
         prev_board = []
         board = readBoard('input.txt')
-        printBoard(board)
         
-        step = algorithm(prev_board, board, 1, remain_time_x, remain_time_y)
+        step = algorithm_1(prev_board, board, 1, remain_time_x, remain_time_y)
         print(step)
         
         start, end = step[0], step[1]
@@ -168,14 +170,25 @@ while True:
             break
         
         inp = 'O'
+        
+        if count == 100:
+            print("================================================\n- Reach 100 turns! Game over!\n")
+            printBoard(board)
+            print('--> X: ' + str(nums(board, 1)) + '\n')
+            print('--> O: ' + str(nums(board, -1)) + '\n')
+            break
+            
     elif inp == 'o' or inp == 'O':
+        count += 1
+        print('Step ' + str(count) + ' O\n')
+        
+        prev_board = []
         board = readBoard('output.txt')
-        printBoard(board)
         
-        pos = input('POSITION: ')
-        tmp = [int(x) for x in pos]
+        step = algorithm_2(prev_board, board, 1, remain_time_x, remain_time_y)
+        print(step)
         
-        start, end = (tmp[0], tmp[1]), (tmp[2], tmp[3])
+        start, end = step[0], step[1]
         cg.simple_move(board, start, end)
         
         saveBoard(board, 'input.txt')
@@ -184,6 +197,14 @@ while True:
             break
         
         inp = 'X'
+        
+        if count == 100:
+            print("================================================\n- Reach 100 turns! Game over!\n")
+            printBoard(board)
+            print('--> X: ' + str(nums(board, 1)) + '\n')
+            print('--> O: ' + str(nums(board, -1)) + '\n')
+            break
+            
     else:
         print("\nEND PROGRAM")
         break

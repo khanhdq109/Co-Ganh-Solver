@@ -2,6 +2,9 @@ import game
 import Minimax
 import MCTS
 
+import random
+import time
+
 def readBoard(file):
     count = 0
     board = []
@@ -15,15 +18,17 @@ def readBoard(file):
 def printBoard(board):
     for i in range(5):
         for j in range(5):
+            e = ''
+            if j == 4: e = '\n'
             if board[i][j] != -1:
-                print(' ' + str(board[i][j]) + ' ', end = '')
+                print(' ' + str(board[i][j]) + ' ', end = e)
             else:
-                print(str(board[i][j]) + ' ', end = '')
-        print('\n')
+                print(str(board[i][j]) + ' ', end = e)
+    print('')
         
 def move(board, player, remain_time_x = 100, remain_time_y = 100):
-    solver = Minimax.Solver(4, board, player)
-    result = solver.minimax()       
+    solver = Minimax.Solver(8, board, player)
+    result = solver.solv()
     return result
 
 def test_move(board):
@@ -56,16 +61,7 @@ def test_moveGen(board):
         print(gen[1], ", score: ", str(sum(map(sum, gen[0].board))))
         print('\n')
 
-"""
 board = readBoard('input.txt')
 
-print("FIRST BOARD\n")
 printBoard(board)
-
-test_simple(board)
-"""
-
-list = [5, 7, 3, 1, 15, 26, 9, 2.5, 3.2, 5.1, 4.9, 11]
-list = [item for item in list if item >= 5]
-
-print(list)
+test_move(board)
