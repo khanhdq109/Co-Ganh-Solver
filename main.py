@@ -4,7 +4,11 @@
 # prev_board parameter in both two above function is used for nothing
 
 import sys
+import time
+import random
 import timeit
+
+random.seed(time.time())
 
 import game
 import Minimax
@@ -89,6 +93,34 @@ def move_2(prev_board, board, player, remain_time_x, remain_time_y):
         
     return result
 
+def move_3(prev_board, board, player, remain_time_x, remain_time_y):
+    start = timeit.default_timer()
+    
+    solver = None
+    s = sum(map(sum, board))
+    rand = random.randint(0, 10)
+    
+    if s <= 10 and rand % 5 == 0:
+        print("Using MCTS!\n")
+        solver = MCTS.Solver(board, player)
+    else:
+        print("Using Minimax!\n")
+        depth = 4
+        solver = Minimax.Solver(depth, board, player)
+    
+    result = solver.solv()
+    
+    stop = timeit.default_timer()
+    
+    time_step = stop - start
+    print('--> Total time: ' + str(time_step) + '\n')
+    if player == 1:
+        remain_time_x -= time_step
+    else:
+        remain_time_y -= time_step
+        
+    return result
+
 def choose_algorithm(alg):
     alg = alg.lower()
     
@@ -96,6 +128,8 @@ def choose_algorithm(alg):
         return move_1
     elif alg == 'mcts':
         return move_2
+    elif alg == 'hybrid':
+        return move_3
     else:
         print('INVALID! ALGORITHM IS NOT AVAILABLE')
         return
