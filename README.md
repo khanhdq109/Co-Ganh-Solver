@@ -16,10 +16,10 @@ python main.py <algorithm>
 There are three algorithms you can choose:
 * *minimax* (Minimax algorithm)
 * *mcts* (Monte Carlo Tree Search algorithm)
-* *hybrid* (combine version of two algorithms above)
+* *hybrid* (combine version of two algorithms above)<br /> 
 Example: 
 ```
-python bloxorz.py mcts
+python main.py minimax
 ```
 When it's your turn, the program will ask you to enter the coordinates.<br /> 
 For example, if you want to move from *(4, 4)* to *(3, 3)*, type: *4433*.
