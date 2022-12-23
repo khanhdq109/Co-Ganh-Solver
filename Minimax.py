@@ -17,7 +17,7 @@ class Solver:
     def evaluate(self, board):
         return sum(map(sum, board))
     
-    def play(self, node, dp, alpha = 0, beta = 0):
+    def play(self, node, dp, alpha = -100, beta = 100):
         if dp > self.depth:
             return
         
@@ -25,13 +25,11 @@ class Solver:
         if dp == self.depth:
             return self.evaluate(node.board)
         
-        score = 0
         g = False
         cg = game.CoGanh()
         
         # PLAYER
         if dp % 2 == 0:
-            score = -100
             successor = []
             pos = cg.getPosition(node.board, self.player)
                 
@@ -62,16 +60,18 @@ class Solver:
                                 self.end = s[1]
                             return 100
                     
-                    value = self.play(s[0], dp + 1)
-                    if value > score:
-                        score = value
+                    value = self.play(s[0], dp + 1, alpha, beta)
+                    if value > alpha:
+                        alpha = value
                         if dp == 0:
                             self.start = s[3]
                             self.end = s[1]
+                    if alpha >= beta:
+                        return alpha
+            return alpha
                             
         # OPPONENT
         else:
-            score = 100
             successor = []
             pos = cg.getPosition(node.board, self.opponent)
                 
@@ -96,11 +96,12 @@ class Solver:
                         if cg.X_win(s[0].board):
                             return -100
                     
-                    value = self.play(s[0], dp + 1)
-                    if value < score:
-                        score = value
-                        
-        return score
+                    value = self.play(s[0], dp + 1, alpha, beta)
+                    if value < beta:
+                        beta = value
+                    if beta <= alpha:
+                        return beta
+            return beta
     
     def solv(self):
         node = game.Node_1(self.board)

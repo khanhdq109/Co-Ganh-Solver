@@ -47,7 +47,7 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
     
     # Use depth = 2 when fighting online with 'random move' bot
     # Use depth >= 4 when fighting offline with another team's bot
-    depth = 4
+    depth = 6
     
     # Using Minimax
     solver = Minimax.Solver(depth, board, player)
@@ -56,6 +56,7 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
     stop = timeit.default_timer()
     
     time_step = stop - start
+    print('TIME: ' + str(time_step))
     if player == 1:
         remain_time_o -= time_step
     else:
