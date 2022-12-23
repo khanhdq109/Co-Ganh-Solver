@@ -1,15 +1,7 @@
-# move_1() and move_2() function is just two version of move() function
-# using Minimax and Monte Carlo Tree Search
-
-# prev_board parameter in both two above function is used for nothing
-
-import sys
-import random
 import timeit
 
 import game
 import Minimax
-import MCTS
 
 def readBoard(file):
     count = 0
@@ -42,121 +34,51 @@ def saveBoard(board, file):
                     f.write(str(board[i][j]) + ' ')
             f.write('\n')
             
-def nums(board, player):
-    ans = 0
-    for i in range(5):
-        for j in range(5):
-            if board[i][j] == player:
-                ans += 1
-    return ans
+def restart(file):
+    with open(file, 'w') as f:
+        f.write(' 1  1  1  1  1\n')
+        f.write(' 1  0  0  0  1\n')
+        f.write('-1  0  0  0  1\n')
+        f.write('-1  0  0  0 -1\n')
+        f.write('-1 -1 -1 -1 -1')
             
-# Using Minimax
-def move_1(prev_board, board, player, remain_time_x, remain_time_y):
+def move(prev_board, board, player, remain_time_x, remain_time_o):
     start = timeit.default_timer()
     
     # Use depth = 2 when fighting online with 'random move' bot
-    # Use depth >= 4 when fighting offline with another teams's bot
+    # Use depth >= 4 when fighting offline with another team's bot
     depth = 4
     
+    # Using Minimax
     solver = Minimax.Solver(depth, board, player)
     result = solver.solv()
     
     stop = timeit.default_timer()
     
     time_step = stop - start
-    print('--> Total time: ' + str(time_step) + '\n')
     if player == 1:
-        remain_time_x -= time_step
+        remain_time_o -= time_step
     else:
-        remain_time_y -= time_step
+        remain_time_x -= time_step
         
     return result
 
-# Using Monte Carlo Tree Search
-def move_2(prev_board, board, player, remain_time_x, remain_time_y):
-    start = timeit.default_timer()
-    
-    solver = MCTS.Solver(board, player)
-    result = solver.solv()
-    
-    stop = timeit.default_timer()
-    
-    time_step = stop - start
-    print('--> Total time: ' + str(time_step) + '\n')
-    if player == 1:
-        remain_time_x -= time_step
-    else:
-        remain_time_y -= time_step
-        
-    return result
-
-# Combine version of minimax and mcts
-def move(prev_board, board, player, remain_time_x, remain_time_y):
-    start = timeit.default_timer()
-    
-    solver = None
-    s = sum(map(sum, board))
-    rand = random.randint(0, 10)
-    
-    if s <= 10 and rand % 5 == 0:
-        print("Using MCTS!\n")
-        solver = MCTS.Solver(board, player)
-    else:
-        print("Using Minimax!\n")
-        depth = 4
-        solver = Minimax.Solver(depth, board, player)
-    
-    result = solver.solv()
-    
-    stop = timeit.default_timer()
-    
-    time_step = stop - start
-    print('--> Total time: ' + str(time_step) + '\n')
-    if player == 1:
-        remain_time_x -= time_step
-    else:
-        remain_time_y -= time_step
-        
-    return result
-
-def choose_algorithm(alg):
-    alg = alg.lower()
-    
-    if alg == 'minimax':
-        return move_1
-    elif alg == 'mcts':
-        return move_2
-    elif alg == 'hybrid':
-        return move
-    else:
-        print('INVALID! ALGORITHM IS NOT AVAILABLE')
-        return
-
-def restart(file):
-    with open('input.txt', 'w') as f:
-        f.write(' 1  1  1  1  1\n')
-        f.write(' 1  0  0  0  1\n')
-        f.write('-1  0  0  0  1\n')
-        f.write('-1  0  0  0 -1\n')
-        f.write('-1 -1 -1 -1 -1')
-
-restart()
+restart('input.txt')
+restart('output.txt')
 cg = game.CoGanh()
 inp = 'X'
 remain_time_x = 100
-remain_time_y = 100
-
-algorithm = choose_algorithm(str(sys.argv[1:][0]))
+remain_time_o = 100
 
 while True:
     print('================================================\n- TURN: ' + inp)
     
-    if inp == 'x' or inp == 'X':
+    if inp == 'o' or inp == 'O':
         prev_board = []
         board = readBoard('input.txt')
         printBoard(board)
         
-        step = algorithm(prev_board, board, 1, remain_time_x, remain_time_y)
+        step = move(prev_board, board, 1, remain_time_x, remain_time_o)
         print(step)
         
         start, end = step[0], step[1]
@@ -167,8 +89,9 @@ while True:
         if cg.end_game(board):
             break
         
-        inp = 'O'
-    elif inp == 'o' or inp == 'O':
+        inp = 'X'
+        
+    elif inp == 'x' or inp == 'X':
         board = readBoard('output.txt')
         printBoard(board)
         
@@ -183,7 +106,8 @@ while True:
         if cg.end_game(board):
             break
         
-        inp = 'X'
+        inp = 'O'
+        
     else:
         print("\nEND PROGRAM")
         break

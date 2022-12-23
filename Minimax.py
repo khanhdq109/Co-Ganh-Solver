@@ -17,8 +17,8 @@ class Solver:
     def evaluate(self, board):
         return sum(map(sum, board))
     
-    def play(self, node, dp):
-        if dp > self.depth: 
+    def play(self, node, dp, alpha = 0, beta = 0):
+        if dp > self.depth:
             return
         
         # LEAF NODE
@@ -28,6 +28,7 @@ class Solver:
         score = 0
         g = False
         cg = game.CoGanh()
+        
         # PLAYER
         if dp % 2 == 0:
             score = -100
@@ -48,11 +49,18 @@ class Solver:
                         if not s[2]:
                             continue
                         
-                    if cg.X_win(s[0].board):
-                        if dp == 0:
-                            self.start = s[3]
-                            self.end = s[1]
-                        return 100
+                    if self.player == -1:
+                        if cg.X_win(s[0].board):
+                            if dp == 0:
+                                self.start = s[3]
+                                self.end = s[1]
+                            return 100
+                    else:
+                        if cg.O_win(s[0].board):
+                            if dp == 0:
+                                self.start = s[3]
+                                self.end = s[1]
+                            return 100
                     
                     value = self.play(s[0], dp + 1)
                     if value > score:
@@ -60,6 +68,7 @@ class Solver:
                         if dp == 0:
                             self.start = s[3]
                             self.end = s[1]
+                            
         # OPPONENT
         else:
             score = 100
@@ -80,8 +89,12 @@ class Solver:
                         if not s[2]:
                             continue
                         
-                    if cg.O_win(s[0].board): 
-                        return -100
+                    if self.player == -1:
+                        if cg.O_win(s[0].board): 
+                            return -100
+                    else:
+                        if cg.X_win(s[0].board):
+                            return -100
                     
                     value = self.play(s[0], dp + 1)
                     if value < score:
