@@ -69,7 +69,7 @@ class CoGanh:
             if x < 4 and y < 4:
                 if board[x + 1][y + 1] == 0:
                     self.moveBoard[x][y] = 1
-                    return 0
+                    return False
         
         # PART II
         player = board[x][y]
@@ -397,7 +397,8 @@ class Solver:
                  player: int = -1,):
         self.depth = depth
         self.board = copy.deepcopy(board)
-        self.player, self.opponent = player, -1 * player
+        self.player = player
+        self.opponent = -1 * player
         
         self.start = None
         self.end = None
@@ -443,13 +444,13 @@ class Solver:
                             if dp == 0:
                                 self.start = s[3]
                                 self.end = s[1]
-                            return 100
+                            return 75
                     else:
                         if cg.O_win(s[0].board):
                             if dp == 0:
                                 self.start = s[3]
                                 self.end = s[1]
-                            return 100
+                            return 75
                     
                     value = self.play(s[0], dp + 1, alpha, beta)
                     if value > alpha:
@@ -482,10 +483,10 @@ class Solver:
                         
                     if self.player == -1:
                         if cg.O_win(s[0].board): 
-                            return -100
+                            return -50
                     else:
                         if cg.X_win(s[0].board):
-                            return -100
+                            return -50
                     
                     value = self.play(s[0], dp + 1, alpha, beta)
                     if value < beta:
@@ -497,9 +498,12 @@ class Solver:
     def solv(self):
         node = Node_1(self.board)
         score = self.play(node, 0)
-        x0, y0 = 4 - self.start[0], self.start[1]
-        x1, y1 = 4 - self.end[0], self.end[1]
+        x0 = 4 - self.start[0]
+        y0 = self.start[1]
+        x1 = 4 - self.end[0]
+        y1 = self.end[1]
         return ((x0, y0), (x1, y1))
+        # return (self.start, self.end)
     
 def readBoard(file):
     count = 0
@@ -516,10 +520,12 @@ def printBoard(board):
         for j in range(5):
             e = ''
             if j == 4: e = '\n'
-            if board[i][j] != -1:
-                print(' ' + str(board[i][j]) + ' ', end = e)
+            if board[i][j] == -1:
+                print(' X ', end = e)
+            elif board[i][j] == 1:
+                print(' O ', end = e)
             else:
-                print(str(board[i][j]) + ' ', end = e)
+                print(' - ', end = e)
     print('')
     
 def saveBoard(board, file):
@@ -545,7 +551,7 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
     
     # Use depth = 2 when fighting online with 'random move' bot
     # Use depth >= 4 when fighting offline with another team's bot
-    depth = 4
+    depth = 2
     
     # Using Minimax
     solver = Solver(depth, board, player)
@@ -554,7 +560,6 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
     stop = timeit.default_timer()
     
     time_step = stop - start
-    # print('TIME: ' + str(time_step))
     if player == 1:
         remain_time_o -= time_step
     else:
@@ -565,23 +570,31 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
 restart('input.txt')
 restart('output.txt')
 cg = CoGanh()
-inp = 'X'
+bot = input('--> Bot(X/O): ')
+if bot == 'x' or bot == 'X': player = 'O'
+else: player = 'X'
+print('--> Player(X/O): ' + player)
+inp = input('First(X/O): ')
 remain_time_x = 100
 remain_time_o = 100
 
 while True:
     print('================================================\n- TURN: ' + inp)
     
-    if inp == 'x' or inp == 'X':
-        prev_board = []
+    if inp == 'o' or inp == 'O':
         board = readBoard('input.txt')
         printBoard(board)
         
-        step = move(prev_board, board, -1, remain_time_x, remain_time_o)
-        print(step)
-        x0, y0, x1, y1 = 4 - step[0][0], step[0][1], 4 - step[1][0], step[1][1]
+        if bot == 'o' or bot == 'O':
+            prev_board = []
+            step = move(prev_board, board, 1, remain_time_x, remain_time_o)
+            print(step)
+            start, end = (4 - step[0][0], step[0][1]), (4 - step[1][0], step[1][1])
+        else:
+            pos = input('POSITION: ')
+            tmp = [int(x) for x in pos]
+            start, end = (4 - tmp[0], tmp[1]), (4 - tmp[2], tmp[3])
         
-        start, end = (x0, y0), (x1, y1)
         cg.simple_move(board, start, end)
         
         saveBoard(board, 'output.txt')
@@ -589,16 +602,22 @@ while True:
         if cg.end_game(board):
             break
         
-        inp = 'O'
+        inp = 'X'
         
-    elif inp == 'o' or inp == 'O':
+    elif inp == 'x' or inp == 'X':
         board = readBoard('output.txt')
         printBoard(board)
         
-        pos = input('POSITION: ')
-        tmp = [int(x) for x in pos]
+        if bot == 'x' or bot == 'X':
+            prev_board = []
+            step = move(prev_board, board, -1, remain_time_x, remain_time_o)
+            print(step)
+            start, end = (4 - step[0][0], step[0][1]), (4 - step[1][0], step[1][1])
+        else:
+            pos = input('POSITION: ')
+            tmp = [int(x) for x in pos]
+            start, end = (4 - tmp[0], tmp[1]), (4 - tmp[2], tmp[3])
         
-        start, end = (4 - tmp[0], tmp[1]), (4 - tmp[2], tmp[3])
         cg.simple_move(board, start, end)
         
         saveBoard(board, 'input.txt')
@@ -606,7 +625,7 @@ while True:
         if cg.end_game(board):
             break
         
-        inp = 'X'
+        inp = 'O'
         
     else:
         print("\nEND PROGRAM")

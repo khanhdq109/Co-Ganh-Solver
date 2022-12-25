@@ -594,22 +594,22 @@ class CoGanh:
         score = sum(map(sum, board))
         if score == 16:
             if notice:
-                print("\nX WIN!!!")
+                print("\nO WIN!!!")
             return True
         elif score == -16:
             if notice:
-                print("\nO WIN!!!")
+                print("\nX WIN!!!")
             return True
         return False
     
     def X_win(self, board):
         score = sum(map(sum, board))
-        if score == 16:
+        if score == -16:
             return True
         return False
     
     def O_win(self, board):
         score = sum(map(sum, board))
-        if score == -16:
+        if score == 16:
             return True
         return False
