@@ -61,7 +61,12 @@ def test_moveGen(board):
         print(gen[1], ", score: ", str(sum(map(sum, gen[0].board))))
         print('\n')
 
+"""
 board = readBoard('input.txt')
 
 printBoard(board)
 test_move(board)
+"""
+
+for i in range(4, -1, -1):
+    print(i)

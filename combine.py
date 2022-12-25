@@ -366,6 +366,34 @@ class CoGanh:
         self.ganh(board, end)
         self.chan(board, -1 * board[x1][y1])
         
+    def trapped(self, board, position, player):
+        # (x1, y1) = (2, 1)
+        # (x0, y0) = (1, 0)
+        result = []
+        x1, y1 = position[0], position[1]
+        pos = self.getPosition(board, player)
+        for p in pos:
+            x0, y0 = p[0], p[1]
+            if (
+                x1 >= 0 and x1 < 5 and
+                y1 >= 0 and y1 < 5 and
+                (
+                    (x1 == x0 + 1 and y1 == y0) or
+                    (x1 == x0 - 1 and y1 == y0) or
+                    (x1 == x0 and y1 == y0 + 1) or
+                    (x1 == x0 and y1 == y0 -1) or
+                    ((x0 + y0) % 2 == 0 and
+                        (x1 == x0 - 1 and y1 == y0 - 1) or
+                        (x1 == x0 + 1 and y1 == y0 - 1) or
+                        (x1 == x0 - 1 and y1 == y0 + 1) or
+                        (x1 == x0 + 1 and y1 == y0 + 1)
+                    )
+                )
+            ): result.append(p)
+            
+        return result
+            
+        
     def end_game(self, board, notice = True):
         score = sum(map(sum, board))
         if score == 16:
@@ -393,15 +421,24 @@ class CoGanh:
 class Solver:
     def __init__(self,
                  depth: int = 2,
+                 prev_board: list = None,
                  board: list = None,
                  player: int = -1,):
         self.depth = depth
+        self.prev_board = copy.deepcopy(prev_board)
         self.board = copy.deepcopy(board)
         self.player = player
         self.opponent = -1 * player
         
         self.start = None
         self.end = None
+        
+    def backward(self, prev_board, board, player):
+        for i in range(5):
+            for j in range(5):
+                if prev_board[i][j] == player and board[i][j] == 0:
+                    return (i, j)
+        return None
     
     def evaluate(self, board):
         result = sum(map(sum, board))
@@ -423,10 +460,31 @@ class Solver:
         # PLAYER
         if dp % 2 == 0:
             successor = []
-            pos = cg.getPosition(node.board, self.player)
-                
-            for p in pos:
-                successor += cg.move_gen(node, p)
+            
+            trap = False
+            if self.prev_board != None:
+                if dp == 0:
+                    ans = self.backward(self.prev_board, node.board, self.opponent)
+                    x, y = ans[0], ans[1]
+                    trapped_list = cg.trapped(self.board, (x, y), self.player)
+                    if len(trapped_list) > 0:
+                        trap = True
+                        for t in trapped_list:
+                            tmp_board = copy.deepcopy(self.board)
+                            tmp_board[x][y] = copy.deepcopy(self.player)
+                            tmp_board[t[0]][t[1]] = 0
+                            
+                            cg.ganh(tmp_board, (x, y))
+                            cg.chan(tmp_board, self.opponent)
+                            
+                            tmp = Node_1(tmp_board)
+                            successor.append((tmp, (x, y), True, t))
+            
+            if not trap:
+                pos = cg.getPosition(node.board, self.player)
+                    
+                for p in pos:
+                    successor += cg.move_gen(node, p)
                 
             if len(successor) > 0:
                 for s in successor:
@@ -498,12 +556,7 @@ class Solver:
     def solv(self):
         node = Node_1(self.board)
         score = self.play(node, 0)
-        x0 = 4 - self.start[0]
-        y0 = self.start[1]
-        x1 = 4 - self.end[0]
-        y1 = self.end[1]
-        return ((x0, y0), (x1, y1))
-        # return (self.start, self.end)
+        return (self.start, self.end)
     
 def readBoard(file):
     count = 0
@@ -516,7 +569,7 @@ def readBoard(file):
     return board
 
 def printBoard(board):
-    for i in range(5):
+    for i in range(4, -1, -1):
         for j in range(5):
             e = ''
             if j == 4: e = '\n'
@@ -554,7 +607,7 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
     depth = 2
     
     # Using Minimax
-    solver = Solver(depth, board, player)
+    solver = Solver(depth, prev_board, board, player)
     result = solver.solv()
     
     stop = timeit.default_timer()
@@ -569,31 +622,38 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
 
 restart('input.txt')
 restart('output.txt')
+
 cg = CoGanh()
+
 bot = input('--> Bot(X/O): ')
 if bot == 'x' or bot == 'X': player = 'O'
 else: player = 'X'
-print('--> Player(X/O): ' + player)
-inp = input('First(X/O): ')
+print('\n--> Player(X/O): ' + player)
+inp = input('\n--> First(X/O): ')
+
 remain_time_x = 100
 remain_time_o = 100
 
+board = None
+prev_board = None
+
 while True:
-    print('================================================\n- TURN: ' + inp)
+    print('\n================================================\n- TURN: ' + inp)
     
     if inp == 'o' or inp == 'O':
         board = readBoard('input.txt')
         printBoard(board)
         
         if bot == 'o' or bot == 'O':
-            prev_board = []
             step = move(prev_board, board, 1, remain_time_x, remain_time_o)
             print(step)
-            start, end = (4 - step[0][0], step[0][1]), (4 - step[1][0], step[1][1])
+            start, end = (step[0][0], step[0][1]), (step[1][0], step[1][1])
+            prev_board = board
         else:
             pos = input('POSITION: ')
             tmp = [int(x) for x in pos]
-            start, end = (4 - tmp[0], tmp[1]), (4 - tmp[2], tmp[3])
+            start, end = (tmp[0], tmp[1]), (tmp[2], tmp[3])
+            prev_board = None
         
         cg.simple_move(board, start, end)
         
@@ -609,14 +669,15 @@ while True:
         printBoard(board)
         
         if bot == 'x' or bot == 'X':
-            prev_board = []
             step = move(prev_board, board, -1, remain_time_x, remain_time_o)
             print(step)
-            start, end = (4 - step[0][0], step[0][1]), (4 - step[1][0], step[1][1])
+            start, end = (step[0][0], step[0][1]), (step[1][0], step[1][1])
+            prev_board = board
         else:
             pos = input('POSITION: ')
             tmp = [int(x) for x in pos]
             start, end = (4 - tmp[0], tmp[1]), (4 - tmp[2], tmp[3])
+            prev_board = None
         
         cg.simple_move(board, start, end)
         
