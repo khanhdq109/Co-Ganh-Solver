@@ -403,7 +403,10 @@ class Solver:
         self.end = None
     
     def evaluate(self, board):
-        return sum(map(sum, board))
+        result = sum(map(sum, board))
+        if self.player == -1:
+            result *= -1
+        return result
     
     def play(self, node, dp, alpha = -100, beta = 100):
         if dp > self.depth:
@@ -562,22 +565,23 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
 restart('input.txt')
 restart('output.txt')
 cg = CoGanh()
-inp = 'O'
+inp = 'X'
 remain_time_x = 100
 remain_time_o = 100
 
 while True:
     print('================================================\n- TURN: ' + inp)
     
-    if inp == 'o' or inp == 'O':
+    if inp == 'x' or inp == 'X':
         prev_board = []
         board = readBoard('input.txt')
         printBoard(board)
         
-        step = move(prev_board, board, 1, remain_time_x, remain_time_o)
+        step = move(prev_board, board, -1, remain_time_x, remain_time_o)
         print(step)
+        x0, y0, x1, y1 = 4 - step[0][0], step[0][1], 4 - step[1][0], step[1][1]
         
-        start, end = step[0], step[1]
+        start, end = (x0, y0), (x1, y1)
         cg.simple_move(board, start, end)
         
         saveBoard(board, 'output.txt')
@@ -585,16 +589,16 @@ while True:
         if cg.end_game(board):
             break
         
-        inp = 'X'
+        inp = 'O'
         
-    elif inp == 'x' or inp == 'X':
+    elif inp == 'o' or inp == 'O':
         board = readBoard('output.txt')
         printBoard(board)
         
         pos = input('POSITION: ')
         tmp = [int(x) for x in pos]
         
-        start, end = (tmp[0], tmp[1]), (tmp[2], tmp[3])
+        start, end = (4 - tmp[0], tmp[1]), (4 - tmp[2], tmp[3])
         cg.simple_move(board, start, end)
         
         saveBoard(board, 'input.txt')
@@ -602,7 +606,7 @@ while True:
         if cg.end_game(board):
             break
         
-        inp = 'O'
+        inp = 'X'
         
     else:
         print("\nEND PROGRAM")
