@@ -25,6 +25,35 @@ class CoGanh:
                 if board[i][j] == player:
                     result.append((i, j))
         return result
+    
+    def checkTrap(self, prev_board, board, opponent):
+        x, y = 0, 0
+        
+        for i in range(5):
+            for j in range(5):
+                if prev_board[i][j] == opponent and board[i][j] == 0:
+                    x, y = i, j
+                    break
+        isTrap = False
+        
+        # HORIZONTAL
+        if x > 0 and x < 4:
+            if board[x - 1][y] == opponent and board[x + 1][y] == opponent:
+                isTrap = True
+        # VERTICAL
+        if y > 0 and y < 4:
+            if board[x][y - 1] == opponent and board[x][y + 1] == opponent:
+                isTrap = True
+        # DIAGONAL
+        if ((x + y) % 2 == 0 and (x > 0 and x < 4) and (y > 0 and y < 4)):
+            if board[x - 1][y - 1] == opponent and board[x + 1][y + 1] == opponent:
+                isTrap = True
+            if board[x - 1][y + 1] == opponent and board[x + 1][y - 1] == opponent:
+                isTrap = True
+        
+        if isTrap:
+            return (x, y)
+        return None
 
     # If 0, the chessman at this position can move. Otherwise, it can't
     def cantMove(self, board, position):
@@ -176,11 +205,13 @@ class CoGanh:
                         board[i][j] = player
     
     # Return Node_1 and a position
-    def move_gen(self, node: Node_1, position: tuple):
+    def move_gen(self, node: Node_1, prev_node: Node_1, position: tuple):
         x, y = position[0], position[1]
         player = node.board[x][y]
         opponent = -1 * player
         result = []
+        
+        
             
         # UP
         if x > 0:
@@ -432,13 +463,6 @@ class Solver:
         
         self.start = None
         self.end = None
-        
-    def backward(self, prev_board, board, player):
-        for i in range(5):
-            for j in range(5):
-                if prev_board[i][j] == player and board[i][j] == 0:
-                    return (i, j)
-        return None
     
     def evaluate(self, board):
         result = sum(map(sum, board))
@@ -461,30 +485,10 @@ class Solver:
         if dp % 2 == 0:
             successor = []
             
-            trap = False
-            if self.prev_board != None:
-                if dp == 0:
-                    ans = self.backward(self.prev_board, node.board, self.opponent)
-                    x, y = ans[0], ans[1]
-                    trapped_list = cg.trapped(self.board, (x, y), self.player)
-                    if len(trapped_list) > 0:
-                        trap = True
-                        for t in trapped_list:
-                            tmp_board = copy.deepcopy(self.board)
-                            tmp_board[x][y] = copy.deepcopy(self.player)
-                            tmp_board[t[0]][t[1]] = 0
-                            
-                            cg.ganh(tmp_board, (x, y))
-                            cg.chan(tmp_board, self.opponent)
-                            
-                            tmp = Node_1(tmp_board)
-                            successor.append((tmp, (x, y), True, t))
-            
-            if not trap:
-                pos = cg.getPosition(node.board, self.player)
+            pos = cg.getPosition(node.board, self.player)
                     
-                for p in pos:
-                    successor += cg.move_gen(node, p)
+            for p in pos:
+                successor += cg.move_gen(node, p)
                 
             if len(successor) > 0:
                 for s in successor:
