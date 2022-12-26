@@ -4,8 +4,6 @@ import random
 
 import timeit
 
-random.seed(time.time())
-
 class Node_1:
     def __init__(self,
                  board: list,
@@ -391,42 +389,6 @@ class CoGanh:
                     
         return result
 
-    def simple_move(self, board, start, end):
-        x0, y0 = start[0], start[1]
-        x1, y1 = end[0], end[1]
-        
-        # Check if it's a valid move
-        valid = False
-        if (
-            x1 >= 0 and x1 < 5 and
-            y1 >= 0 and y1 < 5 and
-            (
-                (x1 == x0 + 1 and y1 == y0) or
-                (x1 == x0 - 1 and y1 == y0) or
-                (x1 == x0 and y1 == y0 + 1) or
-                (x1 == x0 and y1 == y0 -1) or
-                ((x0 + y0) % 2 == 0 and
-                    (
-                        (x1 == x0 - 1 and y1 == y0 - 1) or
-                        (x1 == x0 + 1 and y1 == y0 - 1) or
-                        (x1 == x0 - 1 and y1 == y0 + 1) or
-                        (x1 == x0 + 1 and y1 == y0 + 1)
-                    )
-                )
-            )
-        ):
-            valid = True
-        
-        if not valid:
-            print("Invalid move!!!")
-            return
-        
-        board[x1][y1] = board[x0][y0]
-        board[x0][y0] = 0
-        
-        self.ganh(board, end)
-        self.chan(board, -1 * board[x1][y1])
-        
     def end_game(self, board, notice = True):
         score = sum(map(sum, board))
         if score == 16:
@@ -596,47 +558,6 @@ class Solver:
         node = Node_1(self.board, self.prev_board)
         score = self.play(node, 0)
         return (self.start, self.end)
-    
-def readBoard(file):
-    count = 0
-    board = []
-    with open(file, 'r') as f:
-        for line in f:
-            board.append([int(x) for x in line.split()])
-            count += 1
-            if count == 5: break
-    return board
-
-def printBoard(board):
-    for i in range(4, -1, -1):
-        for j in range(5):
-            e = ''
-            if j == 4: e = '\n'
-            if board[i][j] == -1:
-                print(' X ', end = e)
-            elif board[i][j] == 1:
-                print(' O ', end = e)
-            else:
-                print(' - ', end = e)
-    print('')
-    
-def saveBoard(board, file):
-    with open(file, 'w') as f:
-        for i in range(5):
-            for j in range(5):
-                if board[i][j] != -1:
-                    f.write(' ' + str(board[i][j]) + ' ')
-                else:
-                    f.write(str(board[i][j]) + ' ')
-            f.write('\n')
-            
-def restart(file):
-    with open(file, 'w') as f:
-        f.write(' 1  1  1  1  1\n')
-        f.write(' 1  0  0  0  1\n')
-        f.write('-1  0  0  0  1\n')
-        f.write('-1  0  0  0 -1\n')
-        f.write('-1 -1 -1 -1 -1')
         
 def move(prev_board, board, player, remain_time_x, remain_time_o):
     start = timeit.default_timer()
@@ -659,75 +580,3 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
         remain_time_x -= time_step
         
     return result
-
-restart('input.txt')
-restart('output.txt')
-
-cg = CoGanh()
-
-bot = input('--> Bot(X/O): ')
-if bot == 'x' or bot == 'X': player = 'O'
-else: player = 'X'
-print('\n--> Player(X/O): ' + player)
-inp = input('\n--> First(X/O): ')
-
-remain_time_x = 100
-remain_time_o = 100
-
-board = None
-prev_board = None
-
-while True:
-    print('\n================================================\n- TURN: ' + inp)
-    
-    if inp == 'o' or inp == 'O':
-        board = readBoard('input.txt')
-        printBoard(board)
-        
-        if bot == 'o' or bot == 'O':
-            step = move(prev_board, board, 1, remain_time_x, remain_time_o)
-            print(step)
-            start, end = (step[0][0], step[0][1]), (step[1][0], step[1][1])
-            prev_board = board
-        else:
-            pos = input('POSITION: ')
-            tmp = [int(x) for x in pos]
-            start, end = (tmp[0], tmp[1]), (tmp[2], tmp[3])
-            prev_board = None
-        
-        cg.simple_move(board, start, end)
-        
-        saveBoard(board, 'output.txt')
-        
-        if cg.end_game(board):
-            break
-        
-        inp = 'X'
-        
-    elif inp == 'x' or inp == 'X':
-        board = readBoard('output.txt')
-        printBoard(board)
-        
-        if bot == 'x' or bot == 'X':
-            step = move(prev_board, board, -1, remain_time_x, remain_time_o)
-            print(step)
-            start, end = (step[0][0], step[0][1]), (step[1][0], step[1][1])
-            prev_board = board
-        else:
-            pos = input('POSITION: ')
-            tmp = [int(x) for x in pos]
-            start, end = (4 - tmp[0], tmp[1]), (4 - tmp[2], tmp[3])
-            prev_board = None
-        
-        cg.simple_move(board, start, end)
-        
-        saveBoard(board, 'input.txt')
-        
-        if cg.end_game(board):
-            break
-        
-        inp = 'O'
-        
-    else:
-        print("\nEND PROGRAM")
-        break
