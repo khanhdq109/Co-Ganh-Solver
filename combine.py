@@ -595,6 +595,8 @@ class Solver:
     def solv(self):
         node = Node_1(self.board, self.prev_board)
         score = self.play(node, 0)
+        if self.start == None or self.end == None:
+            return None
         return (self.start, self.end)
     
 def readBoard(file):
@@ -716,7 +718,7 @@ while True:
         else:
             pos = input('POSITION: ')
             tmp = [int(x) for x in pos]
-            start, end = (4 - tmp[0], tmp[1]), (4 - tmp[2], tmp[3])
+            start, end = (tmp[0], tmp[1]), (tmp[2], tmp[3])
             prev_board = None
         
         cg.simple_move(board, start, end)
