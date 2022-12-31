@@ -557,8 +557,10 @@ class Solver:
     def solv(self):
         node = Node_1(self.board, self.prev_board)
         score = self.play(node, 0)
+        if self.start == None or self.end == None:
+            return None
         return (self.start, self.end)
-        
+
 def move(prev_board, board, player, remain_time_x, remain_time_o):
     start = timeit.default_timer()
     
@@ -573,7 +575,6 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
     stop = timeit.default_timer()
     
     time_step = stop - start
-    print('--> TIME: ' + str(time_step))
     if player == 1:
         remain_time_o -= time_step
     else:
