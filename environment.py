@@ -1,5 +1,4 @@
 # Environment for bots to interact with each other
-
 import random
 import timeit
 
@@ -7,13 +6,13 @@ import game
 import Minimax
 import MCTS
 
-def contain(num, list):
-    if list == []:
-        return False
-    for i in list:
-        if i == num:
-            return True
-    return False
+def nums(board, player):
+    ans = 0
+    for i in range(5):
+        for j in range(5):
+            if board[i][j] == player:
+                ans += 1
+    return ans
 
 def readBoard(file):
     count = 0
@@ -26,14 +25,16 @@ def readBoard(file):
     return board
 
 def printBoard(board):
-    for i in range(5):
+    for i in range(4, -1, -1):
         for j in range(5):
             e = ''
             if j == 4: e = '\n'
-            if board[i][j] != -1:
-                print(' ' + str(board[i][j]) + ' ', end = e)
+            if board[i][j] == -1:
+                print(' X ', end = e)
+            elif board[i][j] == 1:
+                print(' O ', end = e)
             else:
-                print(str(board[i][j]) + ' ', end = e)
+                print(' - ', end = e)
     print('')
     
 def saveBoard(board, file):
@@ -46,110 +47,58 @@ def saveBoard(board, file):
                     f.write(str(board[i][j]) + ' ')
             f.write('\n')
             
+def restart(file):
+    with open(file, 'w') as f:
+        f.write(' 1  1  1  1  1\n')
+        f.write(' 1  0  0  0  1\n')
+        f.write('-1  0  0  0  1\n')
+        f.write('-1  0  0  0 -1\n')
+        f.write('-1 -1 -1 -1 -1')
+            
 # Using Minimax
 def move_1(prev_board, board, player, remain_time_x, remain_time_y):
     start = timeit.default_timer()
     
-    # Random element
-    rand_step = random.randint(0, 20)
-    s = sum(map(sum, board))
-    list = []
-    # 9 - 7
-    if s >= 0 and s <= 2:
-        list = [0, 4, 8, 12, 16, 20]
-    # 12 - 4
-    elif s >= 0 and s <= 8:
-        list = [5, 15]
-    # 14 - 2 or 2 - 14
-    elif s >= 12 or s <= -12:
-        list = []
-    # Remain
-    else:
-        list = [7]
-    if contain(rand_step, list):
-        cg = game.CoGanh()
-        return cg.random_move_2(board, player)
-    
     # Use depth = 2 when fighting online with 'random move' bot
     # Use depth >= 4 when fighting offline with another team's bot
     depth = 4
-    solver = Minimax.Solver(depth, board, player)
+    solver = Minimax.Solver(depth, prev_board, board, player)
     result = solver.solv()
     
     stop = timeit.default_timer()
     
     time_step = stop - start
-    print('--> Total time: ' + str(time_step) + '\n')
     if player == 1:
-        remain_time_x -= time_step
+        remain_time_o -= time_step
     else:
-        remain_time_y -= time_step
+        remain_time_x -= time_step
         
     return result
 
 # Using Monte Carlo Tree Search
-def move_2(prev_board, board, player, remain_time_x, remain_time_y):
+def move_2(prev_board, board, player, remain_time_x, remain_time_o):
     start = timeit.default_timer()
     
-    # Random element
-    rand_step = random.randint(0, 20)
-    s = sum(map(sum, board))
-    list = []
-    # 9 - 7
-    if s >= 0 and s <= 2:
-        list = [0, 4, 8, 12, 16, 20]
-    # 12 - 4
-    elif s >= 0 and s <= 8:
-        list = [5, 15]
-    # 14 - 2 or 2 - 14
-    elif s >= 12 or s <= -12:
-        list = []
-    # Remain
-    else:
-        list = [7]
-    if contain(rand_step, list):
-        cg = game.CoGanh()
-        return cg.random_move_2(board, player)
-    
-    solver = MCTS.Solver(board, player)
+    threshold = 15
+    solver = MCTS.Solver(board, player, threshold)
     result = solver.solv()
     
     stop = timeit.default_timer()
     
     time_step = stop - start
-    print('--> Total time: ' + str(time_step) + '\n')
     if player == 1:
-        remain_time_x -= time_step
+        remain_time_o -= time_step
     else:
-        remain_time_y -= time_step
+        remain_time_x -= time_step
         
     return result
 
 # Combine version of minimax and mcts
-def move(prev_board, board, player, remain_time_x, remain_time_y):
+def move(prev_board, board, player, remain_time_x, remain_time_o):
     start = timeit.default_timer()
-    
-    # Random element
-    rand_step = random.randint(0, 20)
-    s = sum(map(sum, board))
-    list = []
-    # 9 - 7
-    if s >= 0 and s <= 2:
-        list = [0, 4, 8, 12, 16, 20]
-    # 12 -4
-    elif s >= 0 and s <= 8:
-        list = [5, 15]
-    # 14 - 2 or 2 - 14
-    elif s >= 12 or s <= -12:
-        list = []
-    # Remain
-    else:
-        list = [7]
-    if contain(rand_step, list):
-        cg = game.CoGanh()
-        return cg.random_move_2(board, player)
-    
+
     solver = None
+    s = sum(map(sum, board))
     rand = random.randint(0, 10)
     if s <= 10 and rand % 5 == 0:
         print("Using MCTS!\n")
@@ -163,11 +112,10 @@ def move(prev_board, board, player, remain_time_x, remain_time_y):
     stop = timeit.default_timer()
     
     time_step = stop - start
-    print('--> Total time: ' + str(time_step) + '\n')
     if player == 1:
-        remain_time_x -= time_step
+        remain_time_o -= time_step
     else:
-        remain_time_y -= time_step
+        remain_time_x -= time_step
         
     return result
 
@@ -182,23 +130,7 @@ def choose_algorithm(alg):
         return move
     else:
         print('INVALID! ALGORITHM IS NOT AVAILABLE')
-        return
-
-def restart(file):
-    with open(file, 'w') as f:
-        f.write(' 1  1  1  1  1\n')
-        f.write(' 1  0  0  0  1\n')
-        f.write('-1  0  0  0  1\n')
-        f.write('-1  0  0  0 -1\n')
-        f.write('-1 -1 -1 -1 -1')
-        
-def nums(board, player):
-    ans = 0
-    for i in range(5):
-        for j in range(5):
-            if board[i][j] == player:
-                ans += 1
-    return ans
+        return None
 
 cg = game.CoGanh()
 inp = input("Play first? (X/O): ")

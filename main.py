@@ -2,6 +2,7 @@ import timeit
 
 import game
 import Minimax
+import MCTS
 
 def readBoard(file):
     count = 0
@@ -14,14 +15,16 @@ def readBoard(file):
     return board
 
 def printBoard(board):
-    for i in range(5):
+    for i in range(4, -1, -1):
         for j in range(5):
             e = ''
             if j == 4: e = '\n'
-            if board[i][j] != -1:
-                print(' ' + str(board[i][j]) + ' ', end = e)
+            if board[i][j] == -1:
+                print(' X ', end = e)
+            elif board[i][j] == 1:
+                print(' O ', end = e)
             else:
-                print(str(board[i][j]) + ' ', end = e)
+                print(' - ', end = e)
     print('')
     
 def saveBoard(board, file):
@@ -47,16 +50,22 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
     
     # Use depth = 2 when fighting online with 'random move' bot
     # Use depth >= 4 when fighting offline with another team's bot
-    depth = 5
+    depth = 4
     
     # Using Minimax
-    solver = Minimax.Solver(depth, board, player)
+    solver = Minimax.Solver(depth, prev_board, board, player)
     result = solver.solv()
+    
+    # Using MCTS
+    """
+    threshold = 15
+    solver = MCTS.Solver(board, player, threshold)
+    result = solver.solv()
+    """
     
     stop = timeit.default_timer()
     
     time_step = stop - start
-    print('TIME: ' + str(time_step))
     if player == 1:
         remain_time_o -= time_step
     else:
@@ -66,23 +75,39 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
 
 restart('input.txt')
 restart('output.txt')
+
 cg = game.CoGanh()
-inp = 'X'
+
+bot = input('--> Bot(X/O): ')
+if bot == 'x' or bot == 'X': player = 'O'
+else: player = 'X'
+print('\n--> Player(X/O): ' + player)
+inp = input('\n--> First(X/O): ')
+
 remain_time_x = 100
 remain_time_o = 100
 
+board = None
+prev_board = None
+
 while True:
-    print('================================================\n- TURN: ' + inp)
+    print('\n================================================\n- TURN: ' + inp)
     
     if inp == 'o' or inp == 'O':
-        prev_board = []
         board = readBoard('input.txt')
         printBoard(board)
         
-        step = move(prev_board, board, 1, remain_time_x, remain_time_o)
-        print(step)
+        if bot == 'o' or bot == 'O':
+            step = move(prev_board, board, 1, remain_time_x, remain_time_o)
+            print(step)
+            start, end = (step[0][0], step[0][1]), (step[1][0], step[1][1])
+            prev_board = board
+        else:
+            pos = input('POSITION: ')
+            tmp = [int(x) for x in pos]
+            start, end = (tmp[0], tmp[1]), (tmp[2], tmp[3])
+            prev_board = None
         
-        start, end = step[0], step[1]
         cg.simple_move(board, start, end)
         
         saveBoard(board, 'output.txt')
@@ -96,10 +121,17 @@ while True:
         board = readBoard('output.txt')
         printBoard(board)
         
-        pos = input('POSITION: ')
-        tmp = [int(x) for x in pos]
+        if bot == 'x' or bot == 'X':
+            step = move(prev_board, board, -1, remain_time_x, remain_time_o)
+            print(step)
+            start, end = (step[0][0], step[0][1]), (step[1][0], step[1][1])
+            prev_board = board
+        else:
+            pos = input('POSITION: ')
+            tmp = [int(x) for x in pos]
+            start, end = (tmp[0], tmp[1]), (tmp[2], tmp[3])
+            prev_board = None
         
-        start, end = (tmp[0], tmp[1]), (tmp[2], tmp[3])
         cg.simple_move(board, start, end)
         
         saveBoard(board, 'input.txt')
