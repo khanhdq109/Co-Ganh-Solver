@@ -1,10 +1,6 @@
 import copy
-import time
-import random
 
 import timeit
-
-random.seed(time.time())
 
 class Node_1:
     def __init__(self,
