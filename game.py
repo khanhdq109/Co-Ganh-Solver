@@ -358,10 +358,9 @@ class CoGanh:
     # Return Node_2 and a position
     def move_gen_2(self, node: Node_2, position: tuple):
         x, y = position[0], position[1]
-        player = node.board[x][y]
-        opponent = -1 * player
+        player, opponent = node.board[x][y], -1 * node.board[x][y]
         result = []
-            
+
         # UP
         if x > 0:
             if node.board[x - 1][y] == 0:

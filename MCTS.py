@@ -5,9 +5,11 @@ import game
 
 class Solver:
     def __init__(self,
+                 prev_board: list = None,
                  board: list = None,
                  player: int = 1,
                  simu_threshold: int = 10):
+        self.prev_board = copy.deepcopy(prev_board)
         self.board = copy.deepcopy(board)
         self.player, self.opponent = player, -1 * player
         self.simu_threshold = simu_threshold
@@ -61,7 +63,7 @@ class Solver:
         best_node = None
         for node in list:
             eval = self.evaluate(node)
-            if eval >= max_eval:
+            if eval > max_eval:
                 max_eval = eval
                 best_node = node
                 
@@ -96,8 +98,6 @@ class Solver:
             node.child.append(move[0])
     
     def Simulation(self, node):
-        # print("Simulation: " + str(self.total_simu + 1))
-        
         ply = 0
         if node.parent == None:
             ply = self.player

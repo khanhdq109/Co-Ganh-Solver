@@ -1,4 +1,5 @@
 # Environment for bots to interact with each other
+import copy
 import random
 import timeit
 
@@ -56,7 +57,7 @@ def restart(file):
         f.write('-1 -1 -1 -1 -1')
             
 # Using Minimax
-def move_1(prev_board, board, player, remain_time_x, remain_time_y):
+def move_1(prev_board, board, player, remain_time_x, remain_time_o):
     start = timeit.default_timer()
     
     # Use depth = 2 when fighting online with 'random move' bot
@@ -79,8 +80,8 @@ def move_1(prev_board, board, player, remain_time_x, remain_time_y):
 def move_2(prev_board, board, player, remain_time_x, remain_time_o):
     start = timeit.default_timer()
     
-    threshold = 15
-    solver = MCTS.Solver(board, player, threshold)
+    simu_threshold = 15
+    solver = MCTS.Solver(prev_board, board, player, simu_threshold)
     result = solver.solv()
     
     stop = timeit.default_timer()
@@ -98,15 +99,18 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
     start = timeit.default_timer()
 
     solver = None
-    s = sum(map(sum, board))
-    rand = random.randint(0, 10)
-    if s <= 10 and rand % 5 == 0:
+    s = nums(board, player)
+    rand = random.randint(0, 100)
+    
+    if (s <= 13 and s >= 3) and rand % 5 == 0:
         print("Using MCTS!\n")
-        solver = MCTS.Solver(board, player)
+        simu_threshold = 15
+        solver = MCTS.Solver(prev_board, board, player, simu_threshold)
     else:
         print("Using Minimax!\n")
         depth = 4
-        solver = Minimax.Solver(depth, board, player)
+        solver = Minimax.Solver(depth, prev_board, board, player)
+        
     result = solver.solv()
     
     stop = timeit.default_timer()
@@ -132,21 +136,21 @@ def choose_algorithm(alg):
         print('INVALID! ALGORITHM IS NOT AVAILABLE')
         return None
 
+restart('input.txt')
+restart('output.txt')
+
 cg = game.CoGanh()
-inp = input("Play first? (X/O): ")
+inp = input("--> First(X/O): ")
 
-if inp == 'X' or inp == 'x':
-    restart('input.txt')
-else:
-    restart('output.txt')
-
-algo1 = input("Choose algorithm for X: ")
-algo2 = input("Choose algorithm for O: ")
+algo1 = input("\n--> Choose algorithm for X: ")
+algo2 = input("\n--> Choose algorithm for O: ")
 algorithm_1 = choose_algorithm(algo1)
 algorithm_2 = choose_algorithm(algo2)
 
+board = None
+prev_board = None
 remain_time_x = 100
-remain_time_y = 100
+remain_time_o = 100
 
 count = 0
 while True:
@@ -154,12 +158,12 @@ while True:
     print('================================================\n- TURN ' + str(count) + ': ' + inp)
     
     if inp == 'x' or inp == 'X':
-        prev_board = []
         board = readBoard('input.txt')
         
-        step = algorithm_1(prev_board, board, 1, remain_time_x, remain_time_y)
+        step = algorithm_1(prev_board, board, -1, remain_time_x, remain_time_o)
         print(step)
         
+        prev_board = copy.deepcopy(board)
         start, end = step[0], step[1]
         cg.simple_move(board, start, end)
         
@@ -173,17 +177,17 @@ while True:
         if count == 100:
             print("================================================\n- Reach 100 turns! Game over!\n")
             printBoard(board)
-            print('--> X: ' + str(nums(board, 1)) + '\n')
-            print('--> O: ' + str(nums(board, -1)) + '\n')
+            print('--> X: ' + str(nums(board, -1)) + '\n')
+            print('--> O: ' + str(nums(board, 1)) + '\n')
             break
             
     elif inp == 'o' or inp == 'O':
-        prev_board = []
         board = readBoard('output.txt')
         
-        step = algorithm_2(prev_board, board, -1, remain_time_x, remain_time_y)
+        step = algorithm_2(prev_board, board, 1, remain_time_x, remain_time_o)
         print(step)
         
+        prev_board = copy.deepcopy(board)
         start, end = step[0], step[1]
         cg.simple_move(board, start, end)
         
@@ -197,8 +201,8 @@ while True:
         if count == 100:
             print("================================================\n- Reach 100 turns! Game over!\n")
             printBoard(board)
-            print('--> X: ' + str(nums(board, 1)) + '\n')
-            print('--> O: ' + str(nums(board, -1)) + '\n')
+            print('--> X: ' + str(nums(board, -1)) + '\n')
+            print('--> O: ' + str(nums(board, 1)) + '\n')
             break
             
     else:

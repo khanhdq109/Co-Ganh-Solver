@@ -59,7 +59,7 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
     # Using MCTS
     """
     threshold = 15
-    solver = MCTS.Solver(board, player, threshold)
+    solver = MCTS.Solver(prev_board, board, player, threshold)
     result = solver.solv()
     """
     
