@@ -69,6 +69,7 @@ def move_1(prev_board, board, player, remain_time_x, remain_time_o):
     stop = timeit.default_timer()
     
     time_step = stop - start
+    print('--> TIME: ' + str(time_step))
     if player == 1:
         remain_time_o -= time_step
     else:
@@ -87,6 +88,7 @@ def move_2(prev_board, board, player, remain_time_x, remain_time_o):
     stop = timeit.default_timer()
     
     time_step = stop - start
+    print('--> TIME: ' + str(time_step))
     if player == 1:
         remain_time_o -= time_step
     else:
@@ -116,6 +118,7 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
     stop = timeit.default_timer()
     
     time_step = stop - start
+    print('--> TIME: ' + str(time_step))
     if player == 1:
         remain_time_o -= time_step
     else:
@@ -159,6 +162,7 @@ while True:
     
     if inp == 'x' or inp == 'X':
         board = readBoard('input.txt')
+        printBoard(board)
         
         step = algorithm_1(prev_board, board, -1, remain_time_x, remain_time_o)
         print(step)
@@ -183,6 +187,7 @@ while True:
             
     elif inp == 'o' or inp == 'O':
         board = readBoard('output.txt')
+        printBoard(board)
         
         step = algorithm_2(prev_board, board, 1, remain_time_x, remain_time_o)
         print(step)

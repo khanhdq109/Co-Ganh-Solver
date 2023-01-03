@@ -53,15 +53,15 @@ def move(prev_board, board, player, remain_time_x, remain_time_o):
     depth = 4
     
     # Using Minimax
+    """
     solver = Minimax.Solver(depth, prev_board, board, player)
     result = solver.solv()
+    """
     
     # Using MCTS
-    """
     threshold = 15
     solver = MCTS.Solver(prev_board, board, player, threshold)
     result = solver.solv()
-    """
     
     stop = timeit.default_timer()
     
