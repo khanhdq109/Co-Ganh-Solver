@@ -27,3 +27,6 @@ There are three algorithms you can choose:
 * *minimax* (Minimax algorithm)
 * *mcts* (Monte Carlo Tree Search algorithm)
 * *hybrid* (combine version of two algorithms above)<br />
+
+## Author
+Hung Nguyen - Quoc Khanh
