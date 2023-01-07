@@ -3,3 +3,6 @@ A computer program that play Vietnam's traditional board game "CO GANH" using a 
 
 ## Execute
 By yourself ;>>
+
+## Author
+Hung Nguyen - Quoc Khanh
