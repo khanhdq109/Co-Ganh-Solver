@@ -1,4 +1,4 @@
-# Co Ganh (in progress)
+# Co Ganh with simple Searching Algorithms
 A computer program that play Vietnam's traditional board game "CO GANH" using *Minimax* and *Monte Carlo Tree Search* algorithm.
 
 ## Project structure
@@ -13,16 +13,12 @@ A computer program that play Vietnam's traditional board game "CO GANH" using *M
 ### Human with Bot
 Running the program with command line syntax to play with the bot:
 ```
-python main.py <algorithm>
+python main.py
 ```
-There are three algorithms you can choose:
-* *minimax* (Minimax algorithm)
-* *mcts* (Monte Carlo Tree Search algorithm)
-* *hybrid* (combine version of two algorithms above)<br />
-
+You can change the algorithm in main.py:
 Example: 
 ```
-python main.py minimax
+python main.py
 ```
 When it's your turn, the program will ask you to enter the coordinates.<br /> 
 For example, if you want to move from *(4, 4)* to *(3, 3)*, type: *4433*.
@@ -32,3 +28,7 @@ Running the program with command line syntax and follow the instructions for bot
 ```
 python environment.py
 ```
+There are three algorithms you can choose:
+* *minimax* (Minimax algorithm)
+* *mcts* (Monte Carlo Tree Search algorithm)
+* *hybrid* (combine version of two algorithms above)<br />
