@@ -11,12 +11,7 @@ A computer program that play Vietnam's traditional board game "CO GANH" using *M
 
 ## Execute
 ### Human with Bot
-Running the program with command line syntax to play with the bot:
-```
-python main.py
-```
-You can change the algorithm in main.py:
-Example: 
+Running the program with command line syntax to play with the bot (you can change the algorithm in main.py):
 ```
 python main.py
 ```
